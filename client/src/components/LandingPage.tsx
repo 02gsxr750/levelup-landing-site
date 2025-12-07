@@ -33,12 +33,7 @@ function Header() {
           alt="Level Up Logo" 
           className="w-20 h-20 object-contain flex-shrink-0"
         />
-        <span className="font-black tracking-widest text-4xl md:text-5xl text-foreground" style={{
-          background: "linear-gradient(110deg, #00d4ff, #6366f1, #a855f7, #ec4899, #f97316)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text"
-        }}>
+        <span className="font-black tracking-widest text-4xl md:text-5xl text-white italic">
           LEVEL UP
         </span>
       </div>
@@ -77,22 +72,6 @@ function HeroSection() {
   return (
     <section className="mb-16">
       <div className="text-center mb-8 max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
-          <span className="text-foreground">Post your goals.</span>{" "}
-          <span className="text-foreground">Battle for</span>{" "}
-          <span 
-            style={{
-              background: "linear-gradient(110deg, #22c55e, #10b981)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text"
-            }}
-          >
-            glory
-          </span>
-          <span className="text-foreground">.</span>
-        </h1>
-        
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
           Level Up is where creators, competitors, and communities collide. Post challenges, battle others in real-time, earn coins and XP, and build your reputation.
         </p>
