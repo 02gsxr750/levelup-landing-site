@@ -112,18 +112,6 @@ function HeroSection() {
             <ExternalLink className="w-4 h-4 mr-2" />
             Web Preview
           </Button>
-          <Button 
-            className="rounded-full px-6 py-3 font-semibold text-base text-white border-0"
-            style={{
-              background: "#5865F2",
-              boxShadow: "0 0 30px rgba(88, 101, 242, 0.6), 0 20px 60px rgba(88, 101, 242, 0.3)"
-            }}
-            data-testid="button-discord"
-            onClick={() => window.open('https://discord.gg/YZZj83QT', '_blank')}
-          >
-            <SiDiscord className="w-4 h-4 mr-2" />
-            Discord
-          </Button>
         </div>
 
         <p className="text-xs text-muted-foreground mt-4">
