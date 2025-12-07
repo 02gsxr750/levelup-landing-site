@@ -125,7 +125,7 @@ function HeroSection() {
 
 function ScreenshotGrid() {
   const screenshots = [
-    { src: screenshot1, label: "Challenge Feed", span: "md:col-span-2" },
+    { src: screenshot1, label: "Challenge Feed" },
     { src: screenshot2, label: "Battle View" },
     { src: screenshot3, label: "Power Vote" },
     { src: screenshot4, label: "Power Strike" },
@@ -135,25 +135,37 @@ function ScreenshotGrid() {
   return (
     <section className="mb-16">
       <h2 className="text-2xl font-bold text-center mb-10">Experience Level Up</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="flex justify-center items-end gap-4 overflow-x-auto pb-4">
         {screenshots.map((screenshot, idx) => (
           <div 
             key={idx}
-            className={`relative group rounded-2xl overflow-hidden aspect-[9/16] md:aspect-auto bg-black border border-green-400/20 hover:border-green-400/50 transition-all duration-300 ${screenshot.span || ""}`}
-            style={{
-              boxShadow: "0 0 30px rgba(34, 197, 94, 0.1)"
-            }}
+            className="flex-shrink-0"
             data-testid={`screenshot-card-${idx}`}
           >
-            <img 
-              src={screenshot.src} 
-              alt={screenshot.label}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-            
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-              <div>
-                <p className="text-sm font-semibold text-green-400">{screenshot.label}</p>
+            {/* Phone Frame */}
+            <div className="relative w-48 mx-auto">
+              {/* Phone bezel - outer frame */}
+              <div className="bg-black rounded-3xl p-2.5 shadow-2xl"
+                style={{
+                  boxShadow: "0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255,255,255,0.1)"
+                }}>
+                {/* Phone screen */}
+                <div className="bg-black rounded-2xl overflow-hidden aspect-[9/16] relative group">
+                  {/* Notch */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-20"></div>
+                  
+                  {/* Screen content */}
+                  <img 
+                    src={screenshot.src} 
+                    alt={screenshot.label}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  
+                  {/* Hover overlay with label */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                    <p className="text-xs font-semibold text-green-400">{screenshot.label}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
