@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import LandingPage from "@/components/LandingPage";
 import AboutPage from "@/pages/about";
+import PrivacyPage from "@/pages/privacy";
 import NotFound from "@/pages/not-found";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Toaster />
           <Switch>
             <Route path="/about" component={AboutPage} />
+            <Route path="/privacy" component={PrivacyPage} />
             <Route path="/" component={LandingPage} />
             <Route component={NotFound} />
           </Switch>

@@ -1,0 +1,214 @@
+EVEL UP — PRIVACY POLICY (Professional Legal Version)
+
+Last Updated: December 2025
+Operated by Marshell Ventures LLC
+Contact: support@joinlevelupapp.com
+
+1. Introduction
+
+Level Up (“we,” “us,” “our”) is a challenge-based social platform where users post content, compete in battles, earn coins and XP, and join a community of creators and competitors.
+
+We are committed to protecting your privacy and being transparent about how we collect, use, and safeguard your information. This Privacy Policy explains what data we collect, how we use it, how it is shared, your rights, and the choices you have.
+
+By using Level Up, you agree to the practices described in this Privacy Policy.
+
+2. Information We Collect
+
+We collect the following categories of information:
+
+A. Account Information
+
+Email address
+
+Username and profile information
+
+Authentication data (passwords, tokens, or magic links handled securely by Supabase)
+
+B. User-Generated Content
+
+Photos, videos, and posts you upload
+
+Challenge submissions, battle entries, comments, and other interactions
+
+C. Usage & Technical Data
+
+Collected automatically through hosting and analytics services (e.g., Vercel, Supabase, Expo, Resend, optional analytics tools):
+
+IP address
+
+Device type
+
+App version
+
+Activity logs
+
+Crash logs and performance data
+
+D. Communications
+
+If you contact support or receive emails:
+
+Support messages
+
+Email interaction logs (open, bounce, delivery)
+
+E. Cookies and Similar Technologies (Web Only)
+
+We may use cookies for authentication, session handling, and performance.
+
+3. How We Use Your Information
+
+We use the information we collect to:
+
+A. Operate and maintain the Level Up platform
+
+Create and manage user accounts
+
+Process authentication and login
+
+Host and display challenges, battles, and content
+
+B. Support core features
+
+XP and coin rewards
+
+Leaderboards and battle outcomes
+
+Influencer features and sponsored challenges
+
+C. Safety & Moderation
+
+Detect and prevent abuse, fraud, or harmful activity
+
+Enforce platform policies, including age restrictions (13+)
+
+D. Improve the platform
+
+Analyze usage trends and performance
+
+Fix bugs and enhance features
+
+E. Communicate with users
+
+Respond to support requests
+
+Send onboarding, security, and platform updates
+
+Provide required legal or service-related notifications
+
+We do not sell personal information.
+
+4. How We Share Information
+
+We only share information when necessary to operate Level Up or comply with the law.
+
+A. Service Providers
+
+We may share information with companies that help us run the platform, including:
+
+Supabase – authentication, database storage, logs
+
+Vercel – website hosting and deployment
+
+Expo / EAS – mobile app distribution
+
+Resend – transactional email delivery
+
+Analytics tools – performance and usage insights
+
+These providers are bound by confidentiality and data protection obligations.
+
+B. Legal Requirements
+
+We may disclose information to:
+
+Comply with legal obligations
+
+Respond to lawful requests
+
+Protect the safety, rights, and property of Level Up and its users
+
+C. Community Interactions
+
+Any content you upload is visible to other users unless you delete it or your account.
+
+We never sell user data to third parties.
+
+5. Your Rights & Choices
+
+Depending on your jurisdiction, you may have the right to:
+
+Access your personal information
+
+Update or correct your information
+
+Request deletion of your account and data
+
+Opt out of certain communications
+
+You may exercise these rights by emailing:
+📧 support@joinlevelupapp.com
+
+6. Data Retention
+
+We keep information for as long as your account is active or needed to provide the service.
+
+When you request account deletion:
+
+Your profile and personal information are deleted or anonymized
+
+Your public submissions (e.g., challenges) may remain unless you delete them manually before requesting account removal
+
+7. Security
+
+We use reasonable technical and organizational measures to safeguard your data, including encryption, secure authentication, and modern hosting environments.
+
+However, no system can guarantee 100% security.
+
+8. Children’s Privacy
+
+Level Up is intended for users 13 years of age or older.
+
+We do not knowingly collect personal information from children under 13. If we become aware that a child under 13 has created an account, we will delete it promptly.
+
+9. International Users
+
+Your data may be processed or stored in the United States or other locations where our service providers operate.
+
+10. Changes to This Policy
+
+We may update this Privacy Policy as the platform evolves. Changes will be posted to this page with an updated “Last Updated” date.
+
+11. Contact Us
+
+If you have questions, concerns, or requests regarding your privacy, contact us at:
+
+📧 support@joinlevelupapp.com
+
+📬 Marshell Ventures LLC
+
+✅ Replit Prompt — Add This Privacy Policy to Your Website
+
+Copy/paste this into Replit Chat for your landing site:
+
+REPLIT PROMPT (Copy/Paste):
+
+I need to add a complete Privacy Policy page to my Level Up landing site and wire the footer's Privacy link so it opens this new page.
+
+Requirements:
+
+Create a new file /src/PrivacyPage.tsx that displays the full Privacy Policy text below (preserve formatting and section headers).
+
+Use the same layout, max-width container, and background styling as the landing page so it feels consistent.
+
+Add a “Back to Home” button at the top of the page.
+
+Update the router or app state so that clicking “Privacy” in the footer loads this new PrivacyPage. If you’re not using a router, simple state-based view switching is fine.
+
+Ensure mobile responsiveness.
+
+Here is the full Privacy Policy text—insert it exactly as provided:
+
+[PASTE THE ENTIRE PRIVACY POLICY CONTENT FROM ABOVE]
+
+After implementing the page, tell me which files you created or modified and confirm that the Privacy link now works correctly.

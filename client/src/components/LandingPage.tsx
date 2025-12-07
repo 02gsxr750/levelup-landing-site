@@ -261,8 +261,12 @@ function Footer() {
         <a href="mailto:support@joinlevelupapp.com" className="hover:text-foreground transition-colors">
           Contact
         </a>
-        <a href="#" className="hover:text-foreground transition-colors">
-          Privacy (coming soon)
+        <a 
+          href="/privacy" 
+          className="hover:text-foreground transition-colors"
+          data-testid="link-privacy"
+        >
+          Privacy
         </a>
       </div>
     </footer>
