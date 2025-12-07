@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,18 +16,15 @@ import {
   Mail,
   Building2
 } from "lucide-react";
+import logoImage from "@assets/Latest Level Up Logo_1765075167902.png";
 
 function Logo() {
   return (
-    <div 
-      className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-      style={{
-        background: "radial-gradient(circle at 20% 0, #ffe66e 0, #ff7a3c 32%, #ff3c7d 58%, #6c5ce7 86%)",
-        boxShadow: "0 18px 45px rgba(0, 0, 0, 0.6)"
-      }}
-    >
-      <span className="font-extrabold text-lg tracking-wider text-white">LU</span>
-    </div>
+    <img 
+      src={logoImage} 
+      alt="Level Up Logo" 
+      className="w-12 h-12 object-contain flex-shrink-0"
+    />
   );
 }
 
@@ -64,7 +60,7 @@ function Header() {
           href="#policies" 
           className="px-3.5 py-1.5 rounded-full border border-border text-foreground font-medium text-sm"
           style={{
-            background: "linear-gradient(120deg, rgba(255, 122, 60, 0.12), rgba(0, 212, 255, 0.06))"
+            background: "linear-gradient(120deg, rgba(0, 212, 255, 0.12), rgba(168, 85, 247, 0.08))"
           }}
           data-testid="nav-link-policies"
         >
@@ -82,9 +78,9 @@ function HeroContent() {
         <span 
           className="px-2.5 py-1 rounded-full border text-[10px] font-semibold uppercase tracking-[0.16em]"
           style={{
-            borderColor: "rgba(255, 122, 60, 0.4)",
-            background: "rgba(5, 5, 9, 0.7)",
-            color: "#ff7a3c"
+            borderColor: "rgba(0, 212, 255, 0.4)",
+            background: "rgba(26, 10, 46, 0.7)",
+            color: "#00d4ff"
           }}
         >
           Closed Beta
@@ -97,7 +93,7 @@ function HeroContent() {
         <span 
           className="bg-clip-text text-transparent"
           style={{
-            backgroundImage: "linear-gradient(110deg, #ffe66e, #ff7a3c, #ff3c7d, #6c5ce7)"
+            backgroundImage: "linear-gradient(110deg, #00d4ff, #6366f1, #a855f7, #ec4899, #f97316)"
           }}
         >
           challenge
@@ -127,8 +123,8 @@ function HeroContent() {
         <Button 
           className="rounded-full px-5 py-2.5 font-semibold text-sm text-white border-0"
           style={{
-            backgroundImage: "linear-gradient(120deg, #ff7a3c, #ff3c7d, #6c5ce7)",
-            boxShadow: "0 18px 45px rgba(0, 0, 0, 0.6)"
+            backgroundImage: "linear-gradient(120deg, #00d4ff, #6366f1, #a855f7, #ec4899)",
+            boxShadow: "0 18px 45px rgba(99, 102, 241, 0.4)"
           }}
           data-testid="button-request-beta"
           onClick={() => {
@@ -163,12 +159,13 @@ function HeroCard() {
       className="rounded-3xl p-5 border relative overflow-hidden"
       style={{
         background: `
-          radial-gradient(circle at top left, rgba(255, 122, 60, 0.32), transparent 55%),
-          radial-gradient(circle at bottom right, rgba(0, 212, 255, 0.28), transparent 60%),
-          hsl(240 12% 5%)
+          radial-gradient(circle at top left, rgba(0, 212, 255, 0.25), transparent 50%),
+          radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.25), transparent 55%),
+          radial-gradient(circle at bottom left, rgba(249, 115, 22, 0.15), transparent 45%),
+          hsl(270 60% 8%)
         `,
-        borderColor: "rgba(255, 255, 255, 0.02)",
-        boxShadow: "0 18px 45px rgba(0, 0, 0, 0.6)"
+        borderColor: "rgba(255, 255, 255, 0.04)",
+        boxShadow: "0 18px 45px rgba(99, 102, 241, 0.2)"
       }}
       data-testid="hero-card-preview"
     >
@@ -183,8 +180,8 @@ function HeroCard() {
           <Badge 
             className="rounded-full text-[11px] font-semibold px-2.5 py-1"
             style={{
-              background: "rgba(255, 122, 60, 0.14)",
-              color: "#ffd6b7"
+              background: "rgba(0, 212, 255, 0.14)",
+              color: "#7dd3fc"
             }}
           >
             +75 XP
@@ -524,7 +521,7 @@ export default function LandingPage() {
     <div 
       className="min-h-screen"
       style={{
-        background: "radial-gradient(circle at top, #15152b 0, #050509 55%)"
+        background: "radial-gradient(ellipse at top, #1a0a2e 0%, #0d0518 40%, #050509 100%)"
       }}
     >
       <div className="max-w-[1120px] mx-auto px-4 py-6 pb-16">
