@@ -5,7 +5,8 @@ import {
   Gamepad2,
   Users,
   Trophy,
-  ArrowRight
+  ArrowRight,
+  MessageCircle
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -121,6 +122,15 @@ function HeroSection() {
           >
             <ExternalLink className="w-4 h-4 mr-2" />
             Web Preview
+          </Button>
+          <Button 
+            variant="outline" 
+            className="rounded-full px-6 py-3 text-base border-border bg-background/60"
+            data-testid="button-discord"
+            onClick={() => window.open('https://discord.gg/YZZj83QT', '_blank')}
+          >
+            <MessageCircle className="w-4 h-4 mr-2" />
+            Discord
           </Button>
         </div>
 
