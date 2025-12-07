@@ -79,8 +79,8 @@ function HeroSection() {
           <Button 
             className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
             style={{
-              background: "#22c55e",
-              boxShadow: "0 0 30px rgba(34, 197, 94, 0.6), 0 20px 60px rgba(34, 197, 94, 0.3)"
+              background: "linear-gradient(135deg, #ffffff 0%, #e5e5ea 100%)",
+              boxShadow: "0 0 30px rgba(229, 229, 234, 0.6), 0 20px 60px rgba(229, 229, 234, 0.3)"
             }}
             data-testid="button-ios-testflight"
             onClick={() => window.open('https://testflight.apple.com/join/MDjEaMVg', '_blank')}
@@ -101,8 +101,11 @@ function HeroSection() {
             Android APK
           </Button>
           <Button 
-            variant="outline" 
-            className="rounded-full px-6 py-3 text-base border-border bg-background/60"
+            className="rounded-full px-6 py-3 font-semibold text-base text-white border-0"
+            style={{
+              background: "#ff8c00",
+              boxShadow: "0 0 30px rgba(255, 140, 0, 0.6), 0 20px 60px rgba(255, 140, 0, 0.3)"
+            }}
             data-testid="button-web-preview"
             onClick={() => window.open('https://levelup-app-flax.vercel.app', '_blank')}
           >
