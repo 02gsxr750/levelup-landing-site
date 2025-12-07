@@ -32,20 +32,6 @@ function Header() {
         >
           About
         </Button>
-        <Button
-          variant="ghost"
-          data-testid="nav-link-how-it-works"
-          onClick={goToAbout}
-        >
-          How It Works
-        </Button>
-        <Button
-          variant="ghost"
-          data-testid="nav-link-safety"
-          onClick={goToAbout}
-        >
-          Safety
-        </Button>
       </nav>
     </header>
   );
