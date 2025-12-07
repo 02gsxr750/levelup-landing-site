@@ -101,10 +101,10 @@ function HeroSection() {
             Android APK
           </Button>
           <Button 
-            className="rounded-full px-6 py-3 font-semibold text-base text-white border-0"
+            className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
             style={{
-              background: "#ff8c00",
-              boxShadow: "0 0 30px rgba(255, 140, 0, 0.6), 0 20px 60px rgba(255, 140, 0, 0.3)"
+              background: "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)",
+              boxShadow: "0 0 30px rgba(255, 215, 0, 0.6), 0 20px 60px rgba(255, 215, 0, 0.3)"
             }}
             data-testid="button-web-preview"
             onClick={() => window.open('https://levelup-app-flax.vercel.app', '_blank')}
