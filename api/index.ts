@@ -28,26 +28,35 @@ if (fs.existsSync(distPublicPath)) {
   app.use(express.static(distPublicPath));
 }
 
-// Setup routes
-(async () => {
-  const httpServer = createServer(app);
-  await registerRoutes(httpServer, app);
+// Initialize routes on first request
+let routesInitialized = false;
+const initRoutes = async () => {
+  if (!routesInitialized) {
+    const httpServer = createServer(app);
+    await registerRoutes(httpServer, app);
+    routesInitialized = true;
+  }
+};
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    res.status(status).json({ message });
-  });
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+  await initRoutes();
+  next();
+});
 
-  // Catch-all: serve index.html for SPA routing
-  app.use("*", (_req, res) => {
-    const indexPath = path.resolve(distPublicPath, "index.html");
-    if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
-    } else {
-      res.status(404).send("Not found");
-    }
-  });
-})();
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(status).json({ message });
+});
+
+// Catch-all: serve index.html for SPA routing
+app.use("*", (_req: Request, res: Response) => {
+  const indexPath = path.resolve(distPublicPath, "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send("Not found");
+  }
+});
 
 export default app;
