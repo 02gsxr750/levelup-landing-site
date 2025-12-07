@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { SiApple, SiAndroid, SiDiscord } from "react-icons/si";
 import { useState } from "react";
-import { useLocation, Link } from "wouter";
+import { useLocation } from "wouter";
 import logoImage from "@assets/Latest Level Up Logo_1765078481170.png";
 import screenshot1 from "@assets/IMG_5341_1765075302448.png";
 import screenshot2 from "@assets/IMG_5352_1765075302441.png";
@@ -19,33 +19,32 @@ import screenshot4 from "@assets/IMG_5350_1765075302443.png";
 import screenshot5 from "@assets/IMG_5346_1765075302446.png";
 
 function Header() {
+  const [, navigate] = useLocation();
+  
   return (
     <header className="flex items-center justify-end gap-2 flex-wrap mb-12">
       <nav className="flex items-center gap-2 flex-wrap">
-        <Link href="/about">
-          <Button
-            variant="ghost"
-            data-testid="nav-link-about"
-          >
-            About
-          </Button>
-        </Link>
-        <Link href="/about">
-          <Button
-            variant="ghost"
-            data-testid="nav-link-how-it-works"
-          >
-            How It Works
-          </Button>
-        </Link>
-        <Link href="/about">
-          <Button
-            variant="ghost"
-            data-testid="nav-link-safety"
-          >
-            Safety
-          </Button>
-        </Link>
+        <Button
+          variant="ghost"
+          data-testid="nav-link-about"
+          onClick={() => navigate("/about")}
+        >
+          About
+        </Button>
+        <Button
+          variant="ghost"
+          data-testid="nav-link-how-it-works"
+          onClick={() => navigate("/about")}
+        >
+          How It Works
+        </Button>
+        <Button
+          variant="ghost"
+          data-testid="nav-link-safety"
+          onClick={() => navigate("/about")}
+        >
+          Safety
+        </Button>
       </nav>
     </header>
   );
@@ -233,6 +232,8 @@ function FeaturesSection() {
 }
 
 function CTASection() {
+  const [, navigate] = useLocation();
+  
   return (
     <section id="contact" className="mb-16 py-12 rounded-2xl border border-green-400/30 bg-gradient-to-r from-green-400/10 to-transparent p-8">
       <div className="max-w-2xl mx-auto text-center">
@@ -254,15 +255,14 @@ function CTASection() {
             <SiDiscord className="w-5 h-5 mr-2" />
             Join Discord
           </Button>
-          <Link href="/about">
-            <Button
-              variant="outline"
-              className="rounded-full px-8 py-3 font-semibold text-base border-border"
-              data-testid="button-learn-more"
-            >
-              Learn More <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Link>
+          <Button
+            variant="outline"
+            className="rounded-full px-8 py-3 font-semibold text-base border-border"
+            data-testid="button-learn-more"
+            onClick={() => navigate("/about")}
+          >
+            Learn More <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
         </div>
 
         <p className="text-sm text-muted-foreground">
@@ -277,13 +277,19 @@ function CTASection() {
 }
 
 function Footer() {
+  const [, navigate] = useLocation();
+  
   return (
     <footer className="border-t border-border/50 pt-8 pb-4 text-xs text-muted-foreground flex flex-col sm:flex-row gap-4 justify-between items-center">
       <div>© {new Date().getFullYear()} Level Up · Marshell Ventures LLC</div>
       <div className="flex flex-wrap gap-4 justify-center">
-        <Link href="/about" className="hover:text-foreground transition-colors">
+        <button 
+          onClick={() => navigate("/about")} 
+          className="hover:text-foreground transition-colors cursor-pointer bg-transparent border-none p-0"
+          data-testid="footer-link-about"
+        >
           About
-        </Link>
+        </button>
         <a href="mailto:support@joinlevelupapp.com" className="hover:text-foreground transition-colors">
           Contact
         </a>
