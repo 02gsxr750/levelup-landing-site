@@ -49,21 +49,6 @@ function Header() {
             {link.label}
           </Button>
         ))}
-        <Button
-          onClick={() => {
-            const contactSection = document.getElementById('contact');
-            contactSection?.scrollIntoView({ behavior: 'smooth' });
-          }}
-          className="rounded-full px-5 py-2.5 font-semibold text-sm text-black border-0 ml-2"
-          style={{
-            background: "#22c55e",
-            boxShadow: "0 0 20px rgba(34, 197, 94, 0.6), 0 18px 45px rgba(34, 197, 94, 0.3)"
-          }}
-          data-testid="button-request-beta"
-        >
-          <Zap className="w-4 h-4 mr-1.5" />
-          Beta Access
-        </Button>
       </nav>
     </header>
   );
@@ -250,9 +235,9 @@ function CTASection() {
   return (
     <section id="contact" className="mb-16 py-12 rounded-2xl border border-green-400/30 bg-gradient-to-r from-green-400/10 to-transparent p-8">
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-4">Ready to Level Up?</h2>
+        <h2 className="text-3xl font-bold mb-4">Join the Community</h2>
         <p className="text-lg text-muted-foreground mb-6">
-          Join thousands of creators and competitors building their reputation. Get beta access today.
+          Beta testers: Join our Discord community to connect with other early adopters, get instant support, and shape the future of Level Up.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
@@ -262,10 +247,11 @@ function CTASection() {
               background: "#22c55e",
               boxShadow: "0 0 30px rgba(34, 197, 94, 0.6)"
             }}
-            data-testid="button-beta-cta"
+            data-testid="button-discord-cta"
+            onClick={() => window.open('https://discord.gg/YZZj83QT', '_blank')}
           >
-            <Zap className="w-5 h-5 mr-2" />
-            Request Beta Access
+            <MessageCircle className="w-5 h-5 mr-2" />
+            Join Discord
           </Button>
           <Button
             variant="outline"
