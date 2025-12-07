@@ -99,16 +99,19 @@ function HeroSection() {
                 background: "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)",
                 boxShadow: "0 0 30px rgba(255, 215, 0, 0.6), 0 20px 60px rgba(255, 215, 0, 0.3)"
               }}
-              data-testid="button-web-preview"
+              data-testid="button-app-preview"
               onClick={() => window.open('https://levelup-app-flax.vercel.app', '_blank')}
             >
               <ExternalLink className="w-4 h-4 mr-2" />
-              Web Preview
+              App Preview
             </Button>
           </div>
 
           <p className="text-xs text-muted-foreground mt-4">
-            Download for iOS, Android, or try the web preview.
+            Download for iOS, Android, or try the app preview.
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Already have the app? Use App Preview to return to Level Up.
           </p>
         </div>
       </div>
