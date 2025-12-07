@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Level Up – Challenge-Based Social App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Level Up is a challenge-based social platform where people compete, vote, and earn coins and XP by leveling up their real lives."
+  />
+  <style>
+    :root {
+      --bg: #050509;
+      --card: #101018;
+      --accent: #ff7a3c;
+      --accent2: #6c5ce7;
+      --accent3: #00d4ff;
+      --text: #f5f5f7;
+      --muted: #b3b3c2;
+      --border: #262633;
+      --radius-lg: 18px;
+      --radius-full: 999px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        sans-serif;
+      background: radial-gradient(circle at top, #15152b 0, #050509 55%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 20% 0,
+          #ffe66e 0,
+          #ff7a3c 32%,
+          #ff3c7d 58%,
+          #6c5ce7 86%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-soft);
+      flex-shrink: 0;
+    }
+
+    .logo span {
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.08em;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      font-size: 14px;
+    }
+
+    .brand-tag {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 14px;
+    }
+
+    nav a {
+      color: var(--muted);
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    .nav-pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      background: linear-gradient(
+        120deg,
+        rgba(255, 122, 60, 0.12),
+        rgba(0, 212, 255, 0.06)
+      );
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 56px;
+    }
+
+    @media (max-width: 840px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .hero-eyebrow span {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 122, 60, 0.4);
+      background: rgba(5, 5, 9, 0.7);
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 4vw, 40px);
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      margin-bottom: 14px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(110deg, #ffe66e, #ff7a3c, #ff3c7d, #6c5ce7);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 20px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(5, 5, 9, 0.8);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn-primary {
+      padding: 10px 22px;
+      border-radius: var(--radius-full);
+      border: 0;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      background-image: linear-gradient(120deg, #ff7a3c, #ff3c7d, #6c5ce7);
+      color: #fff;
+      box-shadow: var(--shadow-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary span.icon {
+      font-size: 16px;
+    }
+
+    .btn-ghost {
+      padding: 9px 18px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      background: rgba(5, 5, 9, 0.6);
+      color: var(--text);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .beta-note {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .hero-card {
+      background: radial-gradient(circle at top left,
+          rgba(255, 122, 60, 0.32),
+          transparent 55%),
+        radial-gradient(circle at bottom right,
+          rgba(0, 212, 255, 0.28),
+          transparent 60%),
+        var(--card);
+      border-radius: 24px;
+      padding: 20px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-tag {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .hero-card-main {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .feed-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .feed-pill {
+      padding: 6px 10px;
+      border-radius: 12px;
+      background: rgba(5, 5, 9, 0.9);
+      border: 1px solid var(--border);
+      flex: 1;
+    }
+
+    .feed-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .feed-meta {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .xp-badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255, 122, 60, 0.14);
+      color: #ffd6b7;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .stat {
+      flex: 1;
+      min-width: 120px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(5, 5, 9, 0.85);
+      border: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .stat-value {
+      font-weight: 600;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      color: var(--muted);
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 18px;
+      max-width: 660px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    @media (max-width: 840px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      font-size: 13px;
+    }
+
+    .card h3 {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .pill-label span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent3);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .list {
+      list-style: none;
+      padding-left: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .list li {
+      margin-bottom: 6px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .list li::before {
+      content: "•";
+      color: var(--accent);
+      margin-top: 1px;
+    }
+
+    footer {
+      border-top: 1px solid #1a1a24;
+      margin-top: 32px;
+      padding-top: 16px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="logo">
+          <!-- Optional: replace with your flame logo image instead -->
+          <span>LU</span>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">LEVEL UP</div>
+          <div class="brand-tag">Challenge · Compete · Grow</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#safety">Safety</a>
+        <a href="#contact">Contact</a>
+        <a href="#policies" class="nav-pill">Policies</a>
+      </nav>
+    </header>
+
+    <main>
+      <div>
+        <div class="hero-eyebrow">
+          <span>Closed Beta</span>
+          Challenge-based social app for real life.
+        </div>
+        <h1 class="hero-title">
+          Turn your everyday life into a <span>challenge</span>.
+        </h1>
+        <p class="hero-subtitle">
+          Level Up is a challenge-based social platform where people post real
+          challenges, compete head-to-head in battles, earn votes from the
+          community, and collect coins & XP along the way.
+        </p>
+
+        <div class="hero-meta">
+          <span>🎮 No gambling · coins only</span>
+          <span>👤 Ages 13+ with safety tools</span>
+          <span>🏆 Built for creators, influencers & sponsors</span>
+        </div>
+
+        <div class="btn-row">
+          <a class="btn-primary" href="#contact">
+            <span class="icon">⚡</span>
+            Request Beta Access
+          </a>
+          <a
+            class="btn-ghost"
+            href="https://levelup-app-flax.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open Web Preview
+          </a>
+        </div>
+        <p class="beta-note">
+          Level Up is currently in closed beta. Public App Store launch is
+          coming soon.
+        </p>
+      </div>
+
+      <aside class="hero-card" aria-label="Preview of Level Up experience">
+        <div class="hero-card-tag">Challenge feed preview</div>
+        <div class="hero-card-main">
+          <div class="feed-row">
+            <div class="feed-pill">
+              <div class="feed-title">Cold Shower Streak – Day 7</div>
+              <div class="feed-meta">Wellness · 2,450 views · 182 votes</div>
+            </div>
+            <div class="xp-badge">+75 XP</div>
+          </div>
+
+          <div class="feed-row">
+            <div class="feed-pill">
+              <div class="feed-title">Hit 10,000 Steps Before Noon</div>
+              <div class="feed-meta">Daily grind · Battle live now</div>
+            </div>
+          </div>
+
+          <div class="stat-row">
+            <div class="stat">
+              <div class="stat-label">Current challenge pool</div>
+              <div class="stat-value">12,500 coins</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Creator rewards earned</div>
+              <div class="stat-value">+2,340 coins</div>
+            </div>
+          </div>
+
+          <div class="chip-row">
+            <div class="chip">XP races & side-by-side battles</div>
+            <div class="chip">Coins only · no cash prizes</div>
+            <div class="chip">Report, block & safety tools built in</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <section id="about">
+      <h2 class="section-title">What is Level Up?</h2>
+      <p class="section-subtitle">
+        Level Up is a social app built around challenges instead of scrolling.
+        Users create challenges, enter battles, earn votes from the community,
+        and collect in-app coins and XP. Coins are virtual items only and are
+        used for rewards, upgrades, and future in-app perks.
+      </p>
+      <div class="grid">
+        <div class="card">
+          <div class="pill-label"><span class="dot"></span>For Everyday Users</div>
+          <h3>Compete and grow</h3>
+          <p>
+            Join public or sponsored challenges, submit your entries, earn votes,
+            and climb the XP ladder. Level Up is designed to push you to get a
+            little better every day, not just watch from the sidelines.
+          </p>
+        </div>
+        <div class="card">
+          <div class="pill-label"><span class="dot"></span>For Creators & Influencers</div>
+          <h3>Turn attention into coin rewards</h3>
+          <p>
+            Post high-impact challenges, bring your audience, and earn in-app
+            coins as people join, vote, and watch. Influencers get extended
+            video length, special perks, and premium cosmetic upgrades.
+          </p>
+        </div>
+        <div class="card">
+          <div class="pill-label"><span class="dot"></span>For Sponsors & Brands</div>
+          <h3>Host meaningful challenges</h3>
+          <p>
+            Create sponsored challenges with coin-based prize pools to drive
+            engagement around your brand, product, or cause. Level Up is built
+            to spotlight sponsors without turning into a spammy ad feed.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works">
+      <h2 class="section-title">How Level Up Works</h2>
+      <p class="section-subtitle">
+        Level Up combines social video, head-to-head battles, and an in-app coin
+        system to reward participation and creativity while keeping everything
+        virtual-only and safety-first.
+      </p>
+      <div class="two-col">
+        <div class="card">
+          <h3>1. Create or join a challenge</h3>
+          <ul class="list">
+            <li>Browse the challenge feed by category (fitness, skills, lifestyle, fun, etc.).</li>
+            <li>Create your own challenge with rules, tags, and coin rewards.</li>
+            <li>Brands and sponsors can create sponsored challenges with larger coin pools.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>2. Battle & earn votes</h3>
+          <ul class="list">
+            <li>Enter 1v1 battles or XP-race style challenge ladders.</li>
+            <li>The community watches and votes for the better entry.</li>
+            <li>Top performers earn more XP and coins over time.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>3. Coins, XP & upgrades</h3>
+          <ul class="list">
+            <li>Earn coins for creating challenges, joining, and winning battles.</li>
+            <li>Coins are virtual items used for in-app upgrades, cosmetics and perks.</li>
+            <li>No real-money gambling, no cash betting, and transparent coin supply metrics.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>4. Tools for influencers & sponsors</h3>
+          <ul class="list">
+            <li>Influencer-only perks like longer videos, higher caps, and cosmetic boosts.</li>
+            <li>Sponsors can feature challenges to run campaigns or giveaways using coin rewards.</li>
+            <li>All prizes are managed as in-app coins, subject to platform rules and policies.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="safety">
+      <h2 class="section-title">Safety, Age Rating & Content Moderation</h2>
+      <p class="section-subtitle">
+        Level Up is built with community safety in mind. We do not allow
+        dangerous, hateful, or illegal content. We provide clear tools for
+        reporting and blocking, and we reserve the right to remove any content
+        that violates our rules.
+      </p>
+      <div class="two-col">
+        <div class="card">
+          <h3>Content & age guidelines</h3>
+          <ul class="list">
+            <li>Ages 13+ only, with additional restrictions for younger users where required.</li>
+            <li>No self-harm, hate, explicit sexual content, or dangerous stunts.</li>
+            <li>No real-money gambling, betting, or cash-based games of chance.</li>
+            <li>Challenges must follow all local laws and platform rules.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Moderation & reporting tools</h3>
+          <ul class="list">
+            <li>Report and block tools are built directly into the app experience.</li>
+            <li>Our team can remove violating content and suspend repeat offenders.</li>
+            <li>Sponsors and influencers must agree to additional guidelines.</li>
+            <li>Clear escalation paths for safety and abuse issues.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="policies">
+      <h2 class="section-title">Policies & Legal</h2>
+      <p class="section-subtitle">
+        Level Up is operated by Marshell Ventures LLC. Full legal details,
+        including our Privacy Policy and Terms of Use, will be available at the
+        links below as we complete our public launch.
+      </p>
+      <div class="two-col">
+        <div class="card">
+          <h3>Virtual coins only</h3>
+          <p>
+            Level Up uses in-app virtual coins as a participation and reward
+            system. Coins have no guaranteed cash value and cannot be used for
+            real-money gambling. All coin usage is governed by our Terms of Use
+            and in-app rules.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Privacy & terms</h3>
+          <p>
+            We respect user privacy and are finalizing our full Privacy Policy
+            and Terms of Use for public release. For review or pre-launch
+            questions, please contact our team at
+            <a href="mailto:support@joinlevelupapp.com">support@joinlevelupapp.com</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2 class="section-title">Contact & Beta Access</h2>
+      <p class="section-subtitle">
+        For beta access, partnership opportunities, influencer programs, or App
+        Store review questions, reach out directly. We’re actively onboarding
+        early users, creators, and sponsors.
+      </p>
+      <div class="two-col">
+        <div class="card">
+          <h3>Contact</h3>
+          <ul class="list">
+            <li>Email: <a href="mailto:support@joinlevelupapp.com">support@joinlevelupapp.com</a></li>
+            <li>Company: Marshell Ventures LLC</li>
+            <li>Product: Level Up – challenge-based social app</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Request beta access</h3>
+          <p style="margin-bottom: 6px;">
+            Send us a quick note with:
+          </p>
+          <ul class="list">
+            <li>Your name and social handles (if any).</li>
+            <li>Whether you’re a user, influencer, or sponsor.</li>
+            <li>Why you’d like to join the beta.</li>
+          </ul>
+          <p style="margin-top: 6px;">
+            Email
+            <a href="mailto:support@joinlevelupapp.com?subject=Level%20Up%20Beta%20Access">
+              support@joinlevelupapp.com
+            </a>
+            with the subject “Level Up Beta Access”.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <span id="year"></span> Level Up · Marshell Ventures LLC</div>
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#safety">Safety</a>
+        <a href="#policies">Policies</a>
+        <!-- Later you can point these to real policy URLs -->
+        <a href="#">Privacy Policy (coming soon)</a>
+        <a href="#">Terms of Use (coming soon)</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Set current year in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
