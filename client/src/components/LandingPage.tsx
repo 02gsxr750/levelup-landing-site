@@ -8,6 +8,7 @@ import {
   ArrowRight,
   MessageCircle
 } from "lucide-react";
+import { SiApple, SiAndroid, SiDiscord } from "react-icons/si";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import logoImage from "@assets/Latest Level Up Logo_1765075167902.png";
@@ -84,7 +85,7 @@ function HeroSection() {
             data-testid="button-ios-testflight"
             onClick={() => window.open('https://testflight.apple.com/join/MDjEaMVg', '_blank')}
           >
-            <ExternalLink className="w-5 h-5 mr-2" />
+            <SiApple className="w-5 h-5 mr-2" />
             iOS TestFlight
           </Button>
           <Button 
@@ -96,7 +97,7 @@ function HeroSection() {
             data-testid="button-android-build"
             onClick={() => window.open('https://expo.dev/accounts/burn424/projects/levelup-app/builds/326713ea-2f60-4a2e-b2d6-40b3c29ad84c', '_blank')}
           >
-            <ExternalLink className="w-5 h-5 mr-2" />
+            <SiAndroid className="w-5 h-5 mr-2" />
             Android APK
           </Button>
           <Button 
@@ -114,7 +115,7 @@ function HeroSection() {
             data-testid="button-discord"
             onClick={() => window.open('https://discord.gg/YZZj83QT', '_blank')}
           >
-            <MessageCircle className="w-4 h-4 mr-2" />
+            <SiDiscord className="w-4 h-4 mr-2" />
             Discord
           </Button>
         </div>
@@ -250,7 +251,7 @@ function CTASection() {
             data-testid="button-discord-cta"
             onClick={() => window.open('https://discord.gg/YZZj83QT', '_blank')}
           >
-            <MessageCircle className="w-5 h-5 mr-2" />
+            <SiDiscord className="w-5 h-5 mr-2" />
             Join Discord
           </Button>
           <Button
