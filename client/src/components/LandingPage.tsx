@@ -28,18 +28,8 @@ function Header() {
   ];
 
   return (
-    <header className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
-      <div className="flex items-center gap-6" data-testid="brand-logo">
-        <img 
-          src={logoImage} 
-          alt="Level Up Logo" 
-          className="w-40 h-40 object-contain flex-shrink-0"
-        />
-        <span className="font-black tracking-widest text-3xl md:text-4xl text-white italic">
-          LEVEL UP
-        </span>
-      </div>
-      <nav className="flex items-center gap-2 flex-wrap justify-center md:justify-end">
+    <header className="flex items-center justify-end gap-2 flex-wrap mb-12">
+      <nav className="flex items-center gap-2 flex-wrap">
         {navLinks.map((link) => (
           <Button
             key={link.label}
@@ -58,65 +48,77 @@ function Header() {
 function HeroSection() {
   return (
     <section className="mb-16">
-      <div className="text-center mb-8 max-w-3xl mx-auto">
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-          Level Up is where creators, competitors, and communities collide. Post challenges, battle others in real-time, earn coins and XP, and build your reputation.
-        </p>
-
-        <div className="flex flex-wrap gap-3 justify-center text-sm text-muted-foreground mb-8">
-          <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-border bg-background/60">
-            <Gamepad2 className="w-4 h-4" /> No gambling
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-border bg-background/60">
-            <Users className="w-4 h-4" /> Ages 13+
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-border bg-background/60">
-            <Trophy className="w-4 h-4" /> Built for creators
-          </span>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-12 mb-8">
+        {/* Logo on left */}
+        <div className="flex-shrink-0" data-testid="brand-logo-hero">
+          <img 
+            src={logoImage} 
+            alt="Level Up Logo" 
+            className="w-80 h-80 object-contain"
+          />
         </div>
+        
+        {/* Content on right */}
+        <div className="text-center md:text-left max-w-2xl">
+          <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+            Level Up is where creators, competitors, and communities collide. Post challenges, battle others in real-time, earn coins and XP, and build your reputation.
+          </p>
 
-        <div className="flex flex-wrap gap-3 justify-center">
-          <Button 
-            className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
-            style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #e5e5ea 100%)",
-              boxShadow: "0 0 30px rgba(229, 229, 234, 0.6), 0 20px 60px rgba(229, 229, 234, 0.3)"
-            }}
-            data-testid="button-ios-testflight"
-            onClick={() => window.open('https://testflight.apple.com/join/MDjEaMVg', '_blank')}
-          >
-            <SiApple className="w-5 h-5 mr-2" />
-            iOS TestFlight
-          </Button>
-          <Button 
-            className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
-            style={{
-              background: "#22c55e",
-              boxShadow: "0 0 30px rgba(34, 197, 94, 0.6), 0 20px 60px rgba(34, 197, 94, 0.3)"
-            }}
-            data-testid="button-android-build"
-            onClick={() => window.open('https://expo.dev/accounts/burn424/projects/levelup-app/builds/326713ea-2f60-4a2e-b2d6-40b3c29ad84c', '_blank')}
-          >
-            <SiAndroid className="w-5 h-5 mr-2" />
-            Android APK
-          </Button>
-          <Button 
-            className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
-            style={{
-              background: "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)",
-              boxShadow: "0 0 30px rgba(255, 215, 0, 0.6), 0 20px 60px rgba(255, 215, 0, 0.3)"
-            }}
-            data-testid="button-web-preview"
-            onClick={() => window.open('https://levelup-app-flax.vercel.app', '_blank')}
-          >
-            <ExternalLink className="w-4 h-4 mr-2" />
-            Web Preview
-          </Button>
+          <div className="flex flex-wrap gap-3 justify-center md:justify-start text-sm text-muted-foreground mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-border bg-background/60">
+              <Gamepad2 className="w-4 h-4" /> No gambling
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-border bg-background/60">
+              <Users className="w-4 h-4" /> Ages 13+
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-border bg-background/60">
+              <Trophy className="w-4 h-4" /> Built for creators
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+            <Button 
+              className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
+              style={{
+                background: "linear-gradient(135deg, #ffffff 0%, #e5e5ea 100%)",
+                boxShadow: "0 0 30px rgba(229, 229, 234, 0.6), 0 20px 60px rgba(229, 229, 234, 0.3)"
+              }}
+              data-testid="button-ios-testflight"
+              onClick={() => window.open('https://testflight.apple.com/join/MDjEaMVg', '_blank')}
+            >
+              <SiApple className="w-5 h-5 mr-2" />
+              iOS TestFlight
+            </Button>
+            <Button 
+              className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
+              style={{
+                background: "#22c55e",
+                boxShadow: "0 0 30px rgba(34, 197, 94, 0.6), 0 20px 60px rgba(34, 197, 94, 0.3)"
+              }}
+              data-testid="button-android-build"
+              onClick={() => window.open('https://expo.dev/accounts/burn424/projects/levelup-app/builds/326713ea-2f60-4a2e-b2d6-40b3c29ad84c', '_blank')}
+            >
+              <SiAndroid className="w-5 h-5 mr-2" />
+              Android APK
+            </Button>
+            <Button 
+              className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
+              style={{
+                background: "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)",
+                boxShadow: "0 0 30px rgba(255, 215, 0, 0.6), 0 20px 60px rgba(255, 215, 0, 0.3)"
+              }}
+              data-testid="button-web-preview"
+              onClick={() => window.open('https://levelup-app-flax.vercel.app', '_blank')}
+            >
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Web Preview
+            </Button>
+          </div>
+
+          <p className="text-xs text-muted-foreground mt-4">
+            Download for iOS, Android, or try the web preview.
+          </p>
         </div>
-
-        <p className="text-xs text-muted-foreground mt-4">
-          Download for iOS, Android, or try the web preview.
-        </p>
       </div>
     </section>
   );
