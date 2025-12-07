@@ -33,7 +33,7 @@ function Header() {
           alt="Level Up Logo" 
           className="w-40 h-40 object-contain flex-shrink-0"
         />
-        <span className="font-black tracking-widest text-5xl md:text-6xl text-white italic">
+        <span className="font-black tracking-widest text-3xl md:text-4xl text-white italic">
           LEVEL UP
         </span>
       </div>
