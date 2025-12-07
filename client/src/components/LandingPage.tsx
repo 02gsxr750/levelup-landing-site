@@ -227,7 +227,7 @@ function CTASection() {
           Beta testers: Join our Discord community to connect with other early adopters, get instant support, and shape the future of Level Up.
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+        <div className="flex justify-center mb-6">
           <Button
             className="rounded-full px-8 py-3 font-semibold text-base text-white border-0"
             style={{
@@ -239,14 +239,6 @@ function CTASection() {
           >
             <SiDiscord className="w-5 h-5 mr-2" />
             Join Discord
-          </Button>
-          <Button
-            variant="outline"
-            className="rounded-full px-8 py-3 font-semibold text-base border-border"
-            data-testid="button-learn-more"
-            onClick={() => { window.location.href = "/about"; }}
-          >
-            Learn More <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
 
@@ -266,13 +258,6 @@ function Footer() {
     <footer className="border-t border-border/50 pt-8 pb-4 text-xs text-muted-foreground flex flex-col sm:flex-row gap-4 justify-between items-center">
       <div>© {new Date().getFullYear()} Level Up · Marshell Ventures LLC</div>
       <div className="flex flex-wrap gap-4 justify-center">
-        <a 
-          href="/about"
-          className="hover:text-foreground transition-colors cursor-pointer"
-          data-testid="footer-link-about"
-        >
-          About
-        </a>
         <a href="mailto:support@joinlevelupapp.com" className="hover:text-foreground transition-colors">
           Contact
         </a>
