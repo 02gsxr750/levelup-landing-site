@@ -14,9 +14,17 @@ import {
   Heart,
   Flag,
   Mail,
-  Building2
+  Building2,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
+import { useState } from "react";
 import logoImage from "@assets/Latest Level Up Logo_1765075167902.png";
+import screenshot1 from "@assets/IMG_5341_1765075302448.png";
+import screenshot2 from "@assets/IMG_5352_1765075302441.png";
+import screenshot3 from "@assets/IMG_5348_1765075302444.png";
+import screenshot4 from "@assets/IMG_5350_1765075302443.png";
+import screenshot5 from "@assets/IMG_5346_1765075302446.png";
 
 function Logo() {
   return (
@@ -121,10 +129,10 @@ function HeroContent() {
 
       <div className="flex flex-wrap gap-3 mb-4">
         <Button 
-          className="rounded-full px-5 py-2.5 font-semibold text-sm text-white border-0"
+          className="rounded-full px-5 py-2.5 font-semibold text-sm text-black border-0"
           style={{
-            backgroundImage: "linear-gradient(120deg, #00d4ff, #6366f1, #a855f7, #ec4899)",
-            boxShadow: "0 18px 45px rgba(99, 102, 241, 0.4)"
+            background: "#22c55e",
+            boxShadow: "0 0 20px rgba(34, 197, 94, 0.6), 0 18px 45px rgba(34, 197, 94, 0.3)"
           }}
           data-testid="button-request-beta"
           onClick={() => {
@@ -153,70 +161,71 @@ function HeroContent() {
   );
 }
 
-function HeroCard() {
+function AppScreenshotCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const screenshots = [
+    { src: screenshot1, label: "Challenge Feed" },
+    { src: screenshot2, label: "Battle View" },
+    { src: screenshot3, label: "Power Vote" },
+    { src: screenshot4, label: "Power Strike Effect" },
+    { src: screenshot5, label: "Profile" }
+  ];
+
+  const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % screenshots.length);
+  const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + screenshots.length) % screenshots.length);
+
   return (
     <aside 
-      className="rounded-3xl p-5 border relative overflow-hidden"
+      className="rounded-3xl p-4 border relative overflow-hidden flex flex-col items-center justify-center"
       style={{
-        background: `
-          radial-gradient(circle at top left, rgba(0, 212, 255, 0.25), transparent 50%),
-          radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.25), transparent 55%),
-          radial-gradient(circle at bottom left, rgba(249, 115, 22, 0.15), transparent 45%),
-          hsl(270 60% 8%)
-        `,
-        borderColor: "rgba(255, 255, 255, 0.04)",
-        boxShadow: "0 18px 45px rgba(99, 102, 241, 0.2)"
+        background: `radial-gradient(circle at center, rgba(34, 197, 94, 0.12), transparent 60%), hsl(270 60% 8%)`,
+        borderColor: "rgba(34, 197, 94, 0.3)",
+        boxShadow: "0 0 40px rgba(34, 197, 94, 0.25), inset 0 0 20px rgba(34, 197, 94, 0.1)"
       }}
-      data-testid="hero-card-preview"
+      data-testid="hero-screenshot-carousel"
     >
-      <div className="text-[11px] text-muted-foreground mb-2">Challenge feed preview</div>
-      
-      <div className="flex flex-col gap-3.5 mb-3">
-        <div className="flex gap-2.5 items-center">
-          <div className="flex-1 px-2.5 py-1.5 rounded-xl bg-background/90 border border-border">
-            <div className="text-[13px] font-semibold mb-0.5">Cold Shower Streak – Day 7</div>
-            <div className="text-[11px] text-muted-foreground">Wellness · 2,450 views · 182 votes</div>
-          </div>
-          <Badge 
-            className="rounded-full text-[11px] font-semibold px-2.5 py-1"
-            style={{
-              background: "rgba(0, 212, 255, 0.14)",
-              color: "#7dd3fc"
-            }}
-          >
-            +75 XP
-          </Badge>
-        </div>
+      <div className="relative w-full aspect-[9/16] max-w-sm overflow-hidden rounded-2xl bg-black">
+        <img 
+          src={screenshots[currentIndex].src} 
+          alt={screenshots[currentIndex].label}
+          className="w-full h-full object-cover"
+        />
+        
+        <button
+          onClick={prevSlide}
+          className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+          data-testid="button-prev-screenshot"
+        >
+          <ChevronLeft className="w-5 h-5 text-green-400" />
+        </button>
 
-        <div className="flex gap-2.5 items-center">
-          <div className="flex-1 px-2.5 py-1.5 rounded-xl bg-background/90 border border-border">
-            <div className="text-[13px] font-semibold mb-0.5">Hit 10,000 Steps Before Noon</div>
-            <div className="text-[11px] text-muted-foreground">Daily grind · Battle live now</div>
-          </div>
+        <button
+          onClick={nextSlide}
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+          data-testid="button-next-screenshot"
+        >
+          <ChevronRight className="w-5 h-5 text-green-400" />
+        </button>
+
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+          {screenshots.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                idx === currentIndex 
+                  ? "bg-green-400 w-6 shadow-lg shadow-green-400/50" 
+                  : "bg-white/40 hover:bg-white/60"
+              }`}
+              data-testid={`button-dot-${idx}`}
+            />
+          ))}
         </div>
       </div>
 
-      <div className="flex gap-3 flex-wrap mt-1">
-        <div className="flex-1 min-w-[120px] px-2.5 py-2 rounded-xl bg-background/85 border border-border text-[11px]">
-          <div className="text-muted-foreground mb-0.5">Current challenge pool</div>
-          <div className="font-semibold">12,500 coins</div>
-        </div>
-        <div className="flex-1 min-w-[120px] px-2.5 py-2 rounded-xl bg-background/85 border border-border text-[11px]">
-          <div className="text-muted-foreground mb-0.5">Creator rewards earned</div>
-          <div className="font-semibold">+2,340 coins</div>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-2 mt-2.5">
-        <span className="text-[11px] px-2.5 py-1 rounded-full border border-dashed border-white/10 text-muted-foreground">
-          XP races & side-by-side battles
-        </span>
-        <span className="text-[11px] px-2.5 py-1 rounded-full border border-dashed border-white/10 text-muted-foreground">
-          Coins only · no cash prizes
-        </span>
-        <span className="text-[11px] px-2.5 py-1 rounded-full border border-dashed border-white/10 text-muted-foreground">
-          Report, block & safety tools built in
-        </span>
+      <div className="mt-4 text-center">
+        <p className="text-sm font-semibold text-green-400">{screenshots[currentIndex].label}</p>
+        <p className="text-xs text-muted-foreground mt-1">Swipe through the app experience</p>
       </div>
     </aside>
   );
@@ -226,7 +235,7 @@ function HeroSection() {
   return (
     <main className="grid grid-cols-1 lg:grid-cols-[1.25fr_1fr] gap-8 items-center mb-14">
       <HeroContent />
-      <HeroCard />
+      <AppScreenshotCarousel />
     </main>
   );
 }
@@ -242,7 +251,7 @@ function FeatureCard({ icon, label, title, description }: FeatureCardProps) {
   return (
     <Card className="p-3.5 border-border">
       <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.04] text-muted-foreground text-[11px] mb-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+        <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
         {label}
       </div>
       <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
@@ -266,19 +275,19 @@ function AboutSection() {
       </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FeatureCard 
-          icon={<Users className="w-4 h-4 text-cyan-400" />}
+          icon={<Users className="w-4 h-4 text-green-400" />}
           label="For Everyday Users"
           title="Compete and grow"
           description="Join public or sponsored challenges, submit your entries, earn votes, and climb the XP ladder. Level Up is designed to push you to get a little better every day, not just watch from the sidelines."
         />
         <FeatureCard 
-          icon={<Star className="w-4 h-4 text-cyan-400" />}
+          icon={<Star className="w-4 h-4 text-green-400" />}
           label="For Creators & Influencers"
           title="Turn attention into coin rewards"
           description="Post high-impact challenges, bring your audience, and earn in-app coins as people join, vote, and watch. Influencers get extended video length, special perks, and premium cosmetic upgrades."
         />
         <FeatureCard 
-          icon={<Building2 className="w-4 h-4 text-cyan-400" />}
+          icon={<Building2 className="w-4 h-4 text-green-400" />}
           label="For Sponsors & Brands"
           title="Host meaningful challenges"
           description="Create sponsored challenges with coin-based prize pools to drive engagement around your brand, product, or cause. Level Up is built to spotlight sponsors without turning into a spammy ad feed."
@@ -380,7 +389,7 @@ function SafetySection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="p-3.5 border-border">
           <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-            <Shield className="w-4 h-4 text-cyan-400" />
+            <Shield className="w-4 h-4 text-green-400" />
             Content & age guidelines
           </h3>
           <ul className="space-y-1.5 text-[13px] text-muted-foreground">
@@ -392,7 +401,7 @@ function SafetySection() {
         </Card>
         <Card className="p-3.5 border-border">
           <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-            <Flag className="w-4 h-4 text-cyan-400" />
+            <Flag className="w-4 h-4 text-green-400" />
             Moderation & reporting tools
           </h3>
           <ul className="space-y-1.5 text-[13px] text-muted-foreground">
@@ -419,7 +428,7 @@ function PoliciesSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="p-3.5 border-border">
           <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-            <Coins className="w-4 h-4 text-cyan-400" />
+            <Coins className="w-4 h-4 text-green-400" />
             Virtual coins only
           </h3>
           <p className="text-muted-foreground text-[13px] leading-relaxed">
@@ -431,7 +440,7 @@ function PoliciesSection() {
         </Card>
         <Card className="p-3.5 border-border">
           <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-            <Heart className="w-4 h-4 text-cyan-400" />
+            <Heart className="w-4 h-4 text-green-400" />
             Privacy & terms
           </h3>
           <p className="text-muted-foreground text-[13px] leading-relaxed">
@@ -460,7 +469,7 @@ function ContactSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="p-3.5 border-border">
           <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-            <Mail className="w-4 h-4 text-cyan-400" />
+            <Mail className="w-4 h-4 text-green-400" />
             Contact
           </h3>
           <ul className="space-y-1.5 text-[13px] text-muted-foreground">
@@ -474,7 +483,7 @@ function ContactSection() {
         </Card>
         <Card className="p-3.5 border-border">
           <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-            <Target className="w-4 h-4 text-cyan-400" />
+            <Target className="w-4 h-4 text-green-400" />
             Request beta access
           </h3>
           <p className="text-muted-foreground text-[13px] mb-1.5">Send us a quick note with:</p>
