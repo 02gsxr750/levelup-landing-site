@@ -11,7 +11,7 @@ import {
 import { SiApple, SiAndroid, SiDiscord } from "react-icons/si";
 import { useState } from "react";
 import { useLocation } from "wouter";
-import logoImage from "@assets/Latest Level Up Logo_1765075167902.png";
+import logoImage from "@assets/Latest Level Up Logo_1765078481170.png";
 import screenshot1 from "@assets/IMG_5341_1765075302448.png";
 import screenshot2 from "@assets/IMG_5352_1765075302441.png";
 import screenshot3 from "@assets/IMG_5348_1765075302444.png";
