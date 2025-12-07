@@ -95,14 +95,23 @@ function HeroSection() {
               background: "#22c55e",
               boxShadow: "0 0 30px rgba(34, 197, 94, 0.6), 0 20px 60px rgba(34, 197, 94, 0.3)"
             }}
-            data-testid="button-request-beta-hero"
-            onClick={() => {
-              const contactSection = document.getElementById('contact');
-              contactSection?.scrollIntoView({ behavior: 'smooth' });
-            }}
+            data-testid="button-ios-testflight"
+            onClick={() => window.open('https://testflight.apple.com/join/MDjEaMVg', '_blank')}
           >
-            <Zap className="w-5 h-5 mr-2" />
-            Request Beta Access
+            <ExternalLink className="w-5 h-5 mr-2" />
+            iOS TestFlight
+          </Button>
+          <Button 
+            className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
+            style={{
+              background: "#22c55e",
+              boxShadow: "0 0 30px rgba(34, 197, 94, 0.6), 0 20px 60px rgba(34, 197, 94, 0.3)"
+            }}
+            data-testid="button-android-build"
+            onClick={() => window.open('https://expo.dev/accounts/burn424/projects/levelup-app/builds/326713ea-2f60-4a2e-b2d6-40b3c29ad84c', '_blank')}
+          >
+            <ExternalLink className="w-5 h-5 mr-2" />
+            Android APK
           </Button>
           <Button 
             variant="outline" 
@@ -116,7 +125,7 @@ function HeroSection() {
         </div>
 
         <p className="text-xs text-muted-foreground mt-4">
-          Closed beta. App Store launch coming soon.
+          Download for iOS, Android, or try the web preview.
         </p>
       </div>
     </section>
