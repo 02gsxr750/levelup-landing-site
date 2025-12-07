@@ -1,0 +1,48 @@
+23:39:33.416 Running build in Washington, D.C., USA (East) – iad1
+23:39:33.417 Build machine configuration: 2 cores, 8 GB
+23:39:33.542 Cloning github.com/02gsxr750/levelup-landing-site (Branch: main, Commit: f61af8e)
+23:39:35.293 Cloning completed: 1.750s
+23:39:35.424 Restored build cache from previous deployment (FryPFmeze2Wpuk5fnMMfeAJWQafa)
+23:39:36.048 Running "vercel build"
+23:39:36.473 Vercel CLI 49.0.0
+23:39:38.362 Installing dependencies...
+23:39:41.935 
+23:39:41.935 up to date in 2s
+23:39:41.936 
+23:39:41.936 64 packages are looking for funding
+23:39:41.936   run `npm fund` for details
+23:39:42.080 
+23:39:42.081 > rest-express@1.0.0 build
+23:39:42.081 > tsx script/build.ts
+23:39:42.082 
+23:39:43.451 building client...
+23:39:43.568 [36mvite v5.4.20 [32mbuilding for production...[36m[39m
+23:39:44.158 transforming...
+23:39:45.246 
+23:39:45.246 A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+23:39:48.291 [32m✓[39m 1670 modules transformed.
+23:39:48.539 rendering chunks...
+23:39:48.563 computing gzip size...
+23:39:49.166 [2m../dist/public/[22m[32mindex.html                                              [39m[1m[2m    2.51 kB[22m[1m[22m[2m │ gzip:  0.96 kB[22m
+23:39:49.167 [2m../dist/public/[22m[2massets/[22m[32mIMG_5348_1765075302444-DAFMIdJg.png              [39m[1m[2m  599.61 kB[22m[1m[22m
+23:39:49.167 [2m../dist/public/[22m[2massets/[22m[32mLatest Level Up Logo_1765078481170-DvGWGqhh.png  [39m[1m[2m  827.63 kB[22m[1m[22m
+23:39:49.167 [2m../dist/public/[22m[2massets/[22m[32mIMG_5346_1765075302446-BfAoCV6-.png              [39m[1m[2m2,483.99 kB[22m[1m[22m
+23:39:49.167 [2m../dist/public/[22m[2massets/[22m[32mIMG_5350_1765075302443-BBBM3AX1.png              [39m[1m[2m3,075.49 kB[22m[1m[22m
+23:39:49.168 [2m../dist/public/[22m[2massets/[22m[32mIMG_5341_1765075302448-DBLqdRQV.png              [39m[1m[2m5,029.54 kB[22m[1m[22m
+23:39:49.168 [2m../dist/public/[22m[2massets/[22m[32mIMG_5352_1765075302441-DaEdDzQ_.png              [39m[1m[2m7,706.22 kB[22m[1m[22m
+23:39:49.168 [2m../dist/public/[22m[2massets/[22m[35mindex-BhOb9kNN.css                               [39m[1m[2m   73.82 kB[22m[1m[22m[2m │ gzip: 12.11 kB[22m
+23:39:49.168 [2m../dist/public/[22m[2massets/[22m[36mindex-fMf3cHo7.js                                [39m[1m[2m  274.32 kB[22m[1m[22m[2m │ gzip: 90.06 kB[22m
+23:39:49.168 [32m✓ built in 5.04s[39m
+23:39:49.168 building server...
+23:39:49.291 
+23:39:49.294   dist/index.cjs  827.0kb
+23:39:49.295 
+23:39:49.295 ⚡ Done in 112ms
+23:39:50.283 Using TypeScript 5.6.3 (local user-provided)
+23:39:56.042 Build Completed in /vercel/output [18s]
+23:39:56.211 Deploying outputs...
+23:40:02.533 Deployment completed
+23:40:03.179 Creating build cache...
+23:40:20.053 Created build cache: 16.867s
+23:40:20.054 Uploading build cache [77.25 MB]
+23:40:20.933 Build cache uploaded: 885.48ms

@@ -1,27 +1,19 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import path from "path";
 import fs from "fs";
 
 const app = express();
 
-// Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "../dist/public")));
 
-// Serve static files from dist/public
-const publicPath = path.join(__dirname, "../dist/public");
-if (fs.existsSync(publicPath)) {
-  app.use(express.static(publicPath));
-}
-
-// Catch-all: serve index.html for SPA routing
-app.get("*", (req, res) => {
-  const indexPath = path.join(publicPath, "index.html");
+app.get("*", (req: Request, res: Response) => {
+  const indexPath = path.join(__dirname, "../dist/public/index.html");
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).send("Not found - index.html missing");
+    res.status(404).send("index.html not found");
   }
 });
 
-export default app;
+module.exports = app;
