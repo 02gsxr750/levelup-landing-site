@@ -28,18 +28,8 @@ function Header() {
   ];
 
   return (
-    <header className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
-      <div className="flex items-center gap-6" data-testid="brand-logo">
-        <img 
-          src={logoImage} 
-          alt="Level Up Logo" 
-          className="w-40 h-40 object-contain flex-shrink-0"
-        />
-        <span className="font-black tracking-widest text-3xl md:text-4xl text-white italic">
-          LEVEL UP
-        </span>
-      </div>
-      <nav className="flex items-center gap-2 flex-wrap justify-center md:justify-end">
+    <header className="flex items-center justify-end gap-2 flex-wrap mb-12">
+      <nav className="flex items-center gap-2 flex-wrap">
         {navLinks.map((link) => (
           <Button
             key={link.label}
@@ -59,6 +49,12 @@ function HeroSection() {
   return (
     <section className="mb-16">
       <div className="text-center mb-8 max-w-3xl mx-auto">
+        <img 
+          src={logoImage} 
+          alt="Level Up Logo" 
+          className="w-64 h-64 object-contain flex-shrink-0 mx-auto mb-8"
+          data-testid="brand-logo-hero"
+        />
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
           Level Up is where creators, competitors, and communities collide. Post challenges, battle others in real-time, earn coins and XP, and build your reputation.
         </p>
