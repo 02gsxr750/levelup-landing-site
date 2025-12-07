@@ -10,12 +10,17 @@ import NotFound from "@/pages/not-found";
 function Router() {
   const [location] = useLocation();
   
+  console.log("Current wouter location:", location);
+  
   if (location === "/about") {
+    console.log("Rendering AboutPage");
     return <AboutPage />;
   }
   if (location === "/") {
+    console.log("Rendering LandingPage");
     return <LandingPage />;
   }
+  console.log("Rendering NotFound");
   return <NotFound />;
 }
 

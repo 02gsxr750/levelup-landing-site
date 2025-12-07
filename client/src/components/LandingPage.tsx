@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { SiApple, SiAndroid, SiDiscord } from "react-icons/si";
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import logoImage from "@assets/Latest Level Up Logo_1765078481170.png";
 import screenshot1 from "@assets/IMG_5341_1765075302448.png";
 import screenshot2 from "@assets/IMG_5352_1765075302441.png";
@@ -19,27 +19,33 @@ import screenshot4 from "@assets/IMG_5350_1765075302443.png";
 import screenshot5 from "@assets/IMG_5346_1765075302446.png";
 
 function Header() {
-  const [, navigate] = useLocation();
-
-  const navLinks = [
-    { href: "/about", label: "About", action: () => navigate("/about") },
-    { href: "#", label: "How It Works", action: () => navigate("/about") },
-    { href: "#", label: "Safety", action: () => navigate("/about") },
-  ];
-
   return (
     <header className="flex items-center justify-end gap-2 flex-wrap mb-12">
       <nav className="flex items-center gap-2 flex-wrap">
-        {navLinks.map((link) => (
+        <Link href="/about">
           <Button
-            key={link.label}
             variant="ghost"
-            onClick={link.action}
-            data-testid={`nav-link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+            data-testid="nav-link-about"
           >
-            {link.label}
+            About
           </Button>
-        ))}
+        </Link>
+        <Link href="/about">
+          <Button
+            variant="ghost"
+            data-testid="nav-link-how-it-works"
+          >
+            How It Works
+          </Button>
+        </Link>
+        <Link href="/about">
+          <Button
+            variant="ghost"
+            data-testid="nav-link-safety"
+          >
+            Safety
+          </Button>
+        </Link>
       </nav>
     </header>
   );
@@ -227,8 +233,6 @@ function FeaturesSection() {
 }
 
 function CTASection() {
-  const [, navigate] = useLocation();
-
   return (
     <section id="contact" className="mb-16 py-12 rounded-2xl border border-green-400/30 bg-gradient-to-r from-green-400/10 to-transparent p-8">
       <div className="max-w-2xl mx-auto text-center">
@@ -250,14 +254,15 @@ function CTASection() {
             <SiDiscord className="w-5 h-5 mr-2" />
             Join Discord
           </Button>
-          <Button
-            variant="outline"
-            className="rounded-full px-8 py-3 font-semibold text-base border-border"
-            onClick={() => navigate("/about")}
-            data-testid="button-learn-more"
-          >
-            Learn More <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+          <Link href="/about">
+            <Button
+              variant="outline"
+              className="rounded-full px-8 py-3 font-semibold text-base border-border"
+              data-testid="button-learn-more"
+            >
+              Learn More <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
         </div>
 
         <p className="text-sm text-muted-foreground">
@@ -272,15 +277,13 @@ function CTASection() {
 }
 
 function Footer() {
-  const [, navigate] = useLocation();
-
   return (
     <footer className="border-t border-border/50 pt-8 pb-4 text-xs text-muted-foreground flex flex-col sm:flex-row gap-4 justify-between items-center">
       <div>© {new Date().getFullYear()} Level Up · Marshell Ventures LLC</div>
       <div className="flex flex-wrap gap-4 justify-center">
-        <button onClick={() => navigate("/about")} className="hover:text-foreground transition-colors">
+        <Link href="/about" className="hover:text-foreground transition-colors">
           About
-        </button>
+        </Link>
         <a href="mailto:support@joinlevelupapp.com" className="hover:text-foreground transition-colors">
           Contact
         </a>
