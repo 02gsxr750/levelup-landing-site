@@ -1,61 +1,26 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "../server/routes";
-import { createServer } from "http";
+import express from "express";
 import path from "path";
 import fs from "fs";
 
 const app = express();
 
-declare module "http" {
-  interface IncomingMessage {
-    rawBody: unknown;
-  }
-}
-
-app.use(
-  express.json({
-    verify: (req, _res, buf) => {
-      req.rawBody = buf;
-    },
-  })
-);
-
+// Middleware
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Setup static file serving from dist/public
-const distPublicPath = path.resolve(__dirname, "../dist/public");
-if (fs.existsSync(distPublicPath)) {
-  app.use(express.static(distPublicPath));
+// Serve static files from dist/public
+const publicPath = path.join(__dirname, "../dist/public");
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
 }
 
-// Initialize routes on first request
-let routesInitialized = false;
-const initRoutes = async () => {
-  if (!routesInitialized) {
-    const httpServer = createServer(app);
-    await registerRoutes(httpServer, app);
-    routesInitialized = true;
-  }
-};
-
-app.use(async (req: Request, res: Response, next: NextFunction) => {
-  await initRoutes();
-  next();
-});
-
-app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-  const status = err.status || err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
-  res.status(status).json({ message });
-});
-
 // Catch-all: serve index.html for SPA routing
-app.use("*", (_req: Request, res: Response) => {
-  const indexPath = path.resolve(distPublicPath, "index.html");
+app.get("*", (req, res) => {
+  const indexPath = path.join(publicPath, "index.html");
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).send("Not found");
+    res.status(404).send("Not found - index.html missing");
   }
 });
 
