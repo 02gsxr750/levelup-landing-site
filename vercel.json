@@ -2,7 +2,18 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "public": "dist/public",
+  "functions": {
+    "dist/index.cjs": {
+      "runtime": "nodejs20.x",
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/index.cjs"
+    }
+  ]
 }
