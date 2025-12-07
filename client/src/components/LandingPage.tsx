@@ -26,14 +26,14 @@ function Header() {
   ];
 
   return (
-    <header className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
-      <div className="flex items-center gap-4" data-testid="brand-logo">
+    <header className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+      <div className="flex items-center gap-6" data-testid="brand-logo">
         <img 
           src={logoImage} 
           alt="Level Up Logo" 
-          className="w-20 h-20 object-contain flex-shrink-0"
+          className="w-40 h-40 object-contain flex-shrink-0"
         />
-        <span className="font-black tracking-widest text-4xl md:text-5xl text-white italic">
+        <span className="font-black tracking-widest text-5xl md:text-6xl text-white italic">
           LEVEL UP
         </span>
       </div>
