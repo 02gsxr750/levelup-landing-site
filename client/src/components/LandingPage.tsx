@@ -110,8 +110,11 @@ function HeroSection() {
             Web Preview
           </Button>
           <Button 
-            variant="outline" 
-            className="rounded-full px-6 py-3 text-base border-border bg-background/60"
+            className="rounded-full px-6 py-3 font-semibold text-base text-white border-0"
+            style={{
+              background: "#5865F2",
+              boxShadow: "0 0 30px rgba(88, 101, 242, 0.6), 0 20px 60px rgba(88, 101, 242, 0.3)"
+            }}
             data-testid="button-discord"
             onClick={() => window.open('https://discord.gg/YZZj83QT', '_blank')}
           >
@@ -243,10 +246,10 @@ function CTASection() {
         
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
           <Button
-            className="rounded-full px-8 py-3 font-semibold text-base text-black border-0"
+            className="rounded-full px-8 py-3 font-semibold text-base text-white border-0"
             style={{
-              background: "#22c55e",
-              boxShadow: "0 0 30px rgba(34, 197, 94, 0.6)"
+              background: "#5865F2",
+              boxShadow: "0 0 30px rgba(88, 101, 242, 0.6)"
             }}
             data-testid="button-discord-cta"
             onClick={() => window.open('https://discord.gg/YZZj83QT', '_blank')}
