@@ -125,6 +125,14 @@ export default function PrivacyPage() {
               <li>Provide required legal or service-related notifications</li>
             </ul>
 
+            <h3 className="text-lg font-semibold text-foreground mt-6 mb-2">F. Virtual Coins & Purchases</h3>
+            <p className="text-muted-foreground">
+              Level Up offers virtual coins that may be earned through participation or purchased through Apple's in-app purchase system. Coins are virtual items used solely within the Level Up platform for features such as challenges, boosts, and cosmetic enhancements.
+            </p>
+            <p className="text-muted-foreground mt-2">
+              Coins have no real-world monetary value, cannot be redeemed for cash or transferred outside the app, and do not constitute gambling or financial instruments.
+            </p>
+
             <p className="text-muted-foreground mt-4 font-semibold">We do not sell personal information.</p>
           </section>
 
@@ -142,6 +150,7 @@ export default function PrivacyPage() {
               <li>Analytics tools – performance and usage insights</li>
             </ul>
             <p className="text-muted-foreground mt-2">These providers are bound by confidentiality and data protection obligations.</p>
+            <p className="text-muted-foreground mt-2">All in-app purchases are processed securely through Apple's App Store. Level Up does not receive or store users' payment card information.</p>
 
             <h3 className="text-lg font-semibold text-foreground mt-6 mb-2">B. Legal Requirements</h3>
             <p className="text-muted-foreground mb-2">We may disclose information to:</p>

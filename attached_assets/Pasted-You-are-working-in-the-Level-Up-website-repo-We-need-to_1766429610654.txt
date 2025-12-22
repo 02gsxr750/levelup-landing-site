@@ -1,0 +1,42 @@
+You are working in the Level Up website repo. We need to update the public Privacy Policy page to be App Store compliant with minimal edits.
+
+GOAL
+Add two disclosures to the Privacy Policy page:
+1) Virtual Coins & Purchases: coins may be earned or purchased via Apple IAP, are virtual-only, have no cash value, cannot be redeemed/transferred, not gambling/financial instruments.
+2) Apple In-App Purchase processing: purchases are processed by Apple; we do not receive/store payment card info.
+
+MANDATORY PROCESS (DO THIS FIRST)
+1) Locate the Privacy Policy page that renders at /privacy on https://www.joinlevelupapp.com/privacy
+2) Identify the exact file path(s) and component(s) responsible for that page (Next.js route/page/component, Markdown file, CMS content, etc.)
+3) Print a short “Privacy Page Map” showing:
+   - File path(s)
+   - Whether content is hardcoded vs sourced
+   - Where the policy text lives
+
+IMPLEMENTATION REQUIREMENTS
+- Make the smallest possible change: do NOT rewrite the entire policy.
+- Preserve all existing headings, numbering, and wording.
+- Only insert the new text in the most appropriate place(s).
+- Do NOT change styling, layout, or routing.
+- Do NOT add new dependencies.
+
+CONTENT TO INSERT (VERBATIM)
+A) Insert this new subsection under Section 3 (How We Use Your Information), after “B. Support core features” OR as Section 3F if preferred:
+
+Virtual Coins & Purchases
+Level Up offers virtual coins that may be earned through participation or purchased through Apple’s in-app purchase system. Coins are virtual items used solely within the Level Up platform for features such as challenges, boosts, and cosmetic enhancements.
+Coins have no real-world monetary value, cannot be redeemed for cash or transferred outside the app, and do not constitute gambling or financial instruments.
+
+B) Insert this sentence under Section 4A (Service Providers), preferably after the provider list:
+
+All in-app purchases are processed securely through Apple’s App Store. Level Up does not receive or store users’ payment card information.
+
+ACCEPTANCE CHECKS
+- Visiting /privacy displays the added “Virtual Coins & Purchases” subsection and the Apple IAP sentence.
+- No other policy text changed.
+- Build passes (npm/pnpm) and page renders without errors.
+
+OUTPUT
+1) List files changed with small diffs
+2) Confirm where the new text was inserted (section numbers)
+3) Provide the final rendered snippet exactly as it appears on the page
