@@ -238,6 +238,19 @@ export default function PrivacyPage() {
             <a href="mailto:support@joinlevelupapp.com" className="hover:text-foreground transition-colors">
               Contact
             </a>
+            <a 
+              href="/privacy" 
+              className="hover:text-foreground transition-colors"
+            >
+              Privacy
+            </a>
+            <a 
+              href="/delete-account" 
+              className="hover:text-foreground transition-colors"
+              data-testid="link-delete-account"
+            >
+              Delete Account
+            </a>
             <span 
               className="hover:text-foreground transition-colors cursor-pointer"
               onClick={goToHome}

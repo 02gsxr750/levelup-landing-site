@@ -271,6 +271,13 @@ function Footer() {
         >
           Privacy
         </a>
+        <a 
+          href="/delete-account" 
+          className="hover:text-foreground transition-colors"
+          data-testid="link-delete-account"
+        >
+          Delete Account
+        </a>
       </div>
     </footer>
   );

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import LandingPage from "@/components/LandingPage";
 import AboutPage from "@/pages/about";
 import PrivacyPage from "@/pages/privacy";
+import DeleteAccountPage from "@/pages/delete-account";
 import NotFound from "@/pages/not-found";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Switch>
             <Route path="/about" component={AboutPage} />
             <Route path="/privacy" component={PrivacyPage} />
+            <Route path="/delete-account" component={DeleteAccountPage} />
             <Route path="/" component={LandingPage} />
             <Route component={NotFound} />
           </Switch>
