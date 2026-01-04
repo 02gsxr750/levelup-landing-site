@@ -1,0 +1,45 @@
+You are working in the Level Up repo. We need a MINIMAL website update to satisfy Google Play’s “Child Safety Standards” requirement for a Social app with user-generated content.
+
+GOAL
+Add a “Child Safety & Abuse Prevention” (CSAE/CSAM) section to the existing Privacy Policy page at:
+https://joinlevelupapp.com/privacy
+
+IMPORTANT RULES
+- Do NOT rewrite or reformat the entire policy.
+- Only add the smallest required section.
+- Preserve existing headings, tone, and structure.
+- Keep the “Last Updated: December 2025” line as-is unless the privacy page already auto-generates dates.
+- Do not change URLs, routing, layout, or styling unless required to place the new text cleanly.
+- Output a diff and the exact file path(s) changed.
+
+STEP 1 — INSPECT (NO CHANGES YET)
+1) Locate the source file that renders the Privacy Policy content for /privacy.
+   - It may be in Next.js app router, e.g. web/app/privacy/page.tsx or similar.
+2) Confirm whether the privacy policy text is hard-coded in the page, pulled from a markdown file, or from a CMS/config.
+3) Report the exact file path + how the content is stored.
+
+STEP 2 — APPLY MINIMAL CHANGE
+Insert the following new section text EXACTLY (word-for-word) immediately AFTER the existing section titled “8. Children's Privacy” (or directly below it). If numbering must be adjusted, do the smallest renumbering necessary.
+
+NEW SECTION TO INSERT:
+
+9. Child Safety & Abuse Prevention
+
+Level Up has a zero-tolerance policy for child sexual abuse and exploitation (CSAE).
+
+We do not allow content that depicts, promotes, or facilitates child sexual abuse material (CSAM) under any circumstances.
+
+Users may report content or accounts that violate our safety policies by contacting support@joinlevelupapp.com. We investigate reports promptly and take appropriate action, including content removal, account termination, and reporting to relevant authorities when required by law.
+
+Level Up complies with all applicable child safety laws and cooperates with law enforcement and regulatory authorities as required.
+
+Notes:
+- Keep the text formatting consistent with the rest of the page (same paragraph spacing / bullet style if any).
+- Do not add links unless the page already uses them.
+- Ensure the section is visible on the /privacy page and not hidden behind collapsed UI.
+
+STEP 3 — OUTPUT
+1) Provide the git diff (or file diff) showing only the minimal edits.
+2) Provide the final rendered section location (e.g., “inserted after ‘8. Children’s Privacy’”).
+3) Provide the exact command(s) to run locally to verify the page renders (if needed).
+4) Do NOT deploy automatically. Stop after changes are ready and wait for my “next” to deploy.

@@ -207,21 +207,35 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-xl font-bold text-foreground mb-4">9. International Users</h2>
+            <h2 className="text-xl font-bold text-foreground mb-4">9. Child Safety & Abuse Prevention</h2>
+            <p className="text-muted-foreground">Level Up has a zero-tolerance policy for child sexual abuse and exploitation (CSAE).</p>
+            <p className="text-muted-foreground mt-4">
+              We do not allow content that depicts, promotes, or facilitates child sexual abuse material (CSAM) under any circumstances.
+            </p>
+            <p className="text-muted-foreground mt-4">
+              Users may report content or accounts that violate our safety policies by contacting support@joinlevelupapp.com. We investigate reports promptly and take appropriate action, including content removal, account termination, and reporting to relevant authorities when required by law.
+            </p>
+            <p className="text-muted-foreground mt-4">
+              Level Up complies with all applicable child safety laws and cooperates with law enforcement and regulatory authorities as required.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-xl font-bold text-foreground mb-4">10. International Users</h2>
             <p className="text-muted-foreground">
               Your data may be processed or stored in the United States or other locations where our service providers operate.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-xl font-bold text-foreground mb-4">10. Changes to This Policy</h2>
+            <h2 className="text-xl font-bold text-foreground mb-4">11. Changes to This Policy</h2>
             <p className="text-muted-foreground">
               We may update this Privacy Policy as the platform evolves. Changes will be posted to this page with an updated "Last Updated" date.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-xl font-bold text-foreground mb-4">11. Contact Us</h2>
+            <h2 className="text-xl font-bold text-foreground mb-4">12. Contact Us</h2>
             <p className="text-muted-foreground mb-4">
               If you have questions, concerns, or requests regarding your privacy, contact us at:
             </p>
