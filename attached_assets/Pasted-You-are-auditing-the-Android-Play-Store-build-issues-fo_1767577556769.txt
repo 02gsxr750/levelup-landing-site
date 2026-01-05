@@ -1,0 +1,61 @@
+You are auditing the Android Play Store build issues for Level Up:
+1) Some images/videos will not load
+2) Coin shop / coins button does nothing when tapped (no navigation, no modal)
+
+DO NOT change code yet.
+ONLY inspect and report with file paths + exact functions/components involved.
+
+A) COIN SHOP TAP PATH (ANDROID)
+- Find every UI entry point that can open Coin Shop:
+  - buttons/CTAs labeled: "Coins", "Coin Shop", coin balance header, buy coins, etc.
+- For each, list:
+  - File path
+  - Component name
+  - onPress handler code
+  - What it tries to do (navigate route, open WebView URL, open native screen, open external link, etc.)
+
+B) WEBVIEW NAVIGATION / LINK INTERCEPT
+- If mobile uses a WebView shell, identify:
+  - The WebView component file
+  - Any onMessage / onNavigationStateChange / shouldStartLoadWithRequest handlers
+  - Any URL allowlist/denylist logic
+  - Any route mapping to CoinShop (e.g., "CoinShop", "/coins", "/shop", "/coin-shop")
+- Report whether Android differs from iOS in these handlers.
+
+C) REVENUECAT / PLAY BILLING HOOK
+- Locate where RevenueCat is initialized:
+  - file path
+  - platform-specific keys
+  - configuration (apiKey selection, appUserID, debug logs)
+- Locate where purchases are triggered from the UI:
+  - file path(s)
+  - function used (purchasePackage / purchaseProduct / purchaseStoreProduct etc.)
+  - error handling and logging behavior
+- Report if any code is still pointing to Stripe URLs or old coin shop flow.
+
+D) MEDIA RENDERING PATH (ANDROID)
+- Identify the media rendering components used in feed/profile/challenges:
+  - image component(s)
+  - video component(s) (expo-av, react-native-video, etc.)
+- For each, list:
+  - file path
+  - how the URL is formed (signed URL / direct Supabase URL / cached URL)
+  - MIME/extension assumptions
+  - any HEIC/HEVC handling logic you previously added
+  - any fallback logic on error
+
+E) SIGNED URL / SUPABASE STORAGE HEADERS
+- Locate the API route / server function that generates signed URLs.
+- Report:
+  - cache headers
+  - TTL
+  - whether it returns content-type or relies on Supabase default
+  - whether Android receives different URLs than web/iOS (any platform param?)
+
+OUTPUT FORMAT (MANDATORY):
+1) Coin Shop Entry Points (table)
+2) WebView Intercept Summary (bullet list)
+3) RevenueCat Purchase Path Summary (bullet list)
+4) Media Render Summary (table)
+5) Likely Root Causes (ranked list)
+NO CODE CHANGES YET.
