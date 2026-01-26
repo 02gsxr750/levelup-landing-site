@@ -1,0 +1,52 @@
+You are working in the Level Up web repo (Next.js App Router). Fix the existing /sponsors page COPY ONLY so it exactly matches the Sponsor Program language and rules I provided below. Do NOT invent new benefits. Do NOT add “priority support,” “account manager,” “analytics dashboard,” or anything not explicitly listed.
+
+PRIMARY GOAL
+1) Remove any “real coin” language and replace with compliant language:
+   - Use: “platform coins” / “coin prize pools” / “coins have no cash value”
+   - Never say “real coin” or imply cash value or guaranteed ROI.
+
+2) Update ALL Sponsor Program copy on /sponsors to exactly match the spec below:
+   - Headline, description, Requirements, tier names, prices, bullets, notes
+   - Keep CTA labels (Choose Starter / Choose Pro / Choose Elite) and “Manage Subscription”
+   - Keep current layout/styling and Stripe wiring (checkout + billing portal) unchanged.
+   - Only text changes.
+
+REQUIRED SPONSOR PROGRAM COPY (USE VERBATIM)
+Sponsor Program
+Run sponsored challenges with platform coin prize pools. Sponsors can create branded challenges where coins are escrowed and automatically paid out to the winner when the challenge ends.
+
+⚠️ Requirements
+• Must be an Influencer member before accessing Sponsor Program
+• Minimum prize pool: 25,000 coins per sponsored challenge
+• Coins are locked in escrow when challenge is created
+• Winner receives prize pool automatically when challenge ends
+
+🌱 Starter Sponsor - $49/month
+• 1 active sponsored challenge at a time
+• Sponsored badge on challenge cards
+• Small banner on challenge detail page
+• Basic stats (views, entries, winner)
+• Coin prize pool escrow & automatic payout
+
+⚡ Pro Sponsor - $149/month
+• Everything in Starter
+• Up to 3 active sponsored challenges
+• Higher feed priority among sponsored challenges
+• Join-screen sponsor intro card
+• 10,000 bonus coins per month
+• Expanded stats: entries, unique participants, votes
+
+👑 Elite Sponsor - $399/month
+• Everything in Pro
+• Up to 5 active sponsored challenges
+• Featured Sponsor tile in challenge discovery
+• 30,000 bonus coins per month
+• Slot for short sponsor intro video (muted auto-play)
+• "Elite Sponsor" badge on cards
+
+Note: All tiers require Influencer membership ($9.99/mo) as a prerequisite. Sponsored challenge coins are held in escrow until the challenge ends, then distributed to the winner. Coins have no cash value. Sponsor subscriptions are purchased and managed on the web.
+
+DELIVERABLE
+- Provide a diff showing exactly what text changed in the /sponsors page (and any related /sponsors/success copy if it mentions coins).
+- Do not change any API route handlers or Stripe logic.
+- Do not change component structure or styling—copy only.

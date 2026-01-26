@@ -12,22 +12,24 @@ const tiers = [
     id: "starter" as Tier,
     name: "Starter Sponsor",
     price: "$49/month",
-    badgeEmoji: "✨",
+    badgeEmoji: "🌱",
     badgeLabel: "SPONSORED",
     borderColor: "border-yellow-500",
     textColor: "text-yellow-400",
     bgGradient: "from-yellow-900/20 to-amber-800/10",
     features: [
-      "Featured sponsor challenge placement",
-      "Basic sponsor badge on profile",
-      "Priority support",
+      "1 active sponsored challenge at a time",
+      "Sponsored badge on challenge cards",
+      "Small banner on challenge detail page",
+      "Basic stats (views, entries, winner)",
+      "Coin prize pool escrow & automatic payout",
     ],
   },
   {
     id: "pro" as Tier,
     name: "Pro Sponsor",
     price: "$149/month",
-    badgeEmoji: "⭐",
+    badgeEmoji: "⚡",
     badgeLabel: "PRO SPONSOR",
     borderColor: "border-blue-500",
     textColor: "text-blue-400",
@@ -35,15 +37,17 @@ const tiers = [
     popular: true,
     features: [
       "Everything in Starter",
-      "Periodic feed placement (~every 25 items)",
-      "Enhanced sponsor badge",
-      "Analytics dashboard access",
+      "Up to 3 active sponsored challenges",
+      "Higher feed priority among sponsored challenges",
+      "Join-screen sponsor intro card",
+      "10,000 bonus coins per month",
+      "Expanded stats: entries, unique participants, votes",
     ],
   },
   {
     id: "elite" as Tier,
     name: "Elite Sponsor",
-    price: "$349/month",
+    price: "$399/month",
     badgeEmoji: "👑",
     badgeLabel: "ELITE SPONSOR",
     borderColor: "border-purple-500",
@@ -51,10 +55,11 @@ const tiers = [
     bgGradient: "from-purple-900/20 to-gray-800/10",
     features: [
       "Everything in Pro",
-      "Higher frequency feed placement (~every 12 items)",
-      "Top priority prominence",
-      "Custom challenge branding",
-      "Dedicated account manager",
+      "Up to 5 active sponsored challenges",
+      "Featured Sponsor tile in challenge discovery",
+      "30,000 bonus coins per month",
+      "Slot for short sponsor intro video (muted auto-play)",
+      '"Elite Sponsor" badge on cards',
     ],
   },
 ];
@@ -216,15 +221,38 @@ export default function SponsorsPage() {
           </Button>
         </header>
 
-        <section className="text-center mb-12">
+        <section className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
-            Sponsor Level Up
+            Sponsor Program
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Get your brand in front of creators and competitors. Feature your challenges, 
-            boost your visibility, and connect with an engaged community driven by 
-            votes, leaderboards, and bragging rights.
+            Run sponsored challenges with platform coin prize pools. Sponsors can create branded 
+            challenges where coins are escrowed and automatically paid out to the winner when the challenge ends.
           </p>
+        </section>
+
+        <section className="max-w-2xl mx-auto mb-12 p-6 rounded-lg border border-yellow-500/50 bg-yellow-900/10">
+          <h2 className="text-lg font-bold text-yellow-400 mb-4 flex items-center gap-2">
+            <span>⚠️</span> Requirements
+          </h2>
+          <ul className="space-y-2 text-sm text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <span className="text-yellow-400">•</span>
+              <span>Must be an Influencer member before accessing Sponsor Program</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-yellow-400">•</span>
+              <span>Minimum prize pool: 25,000 coins per sponsored challenge</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-yellow-400">•</span>
+              <span>Coins are locked in escrow when challenge is created</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-yellow-400">•</span>
+              <span>Winner receives prize pool automatically when challenge ends</span>
+            </li>
+          </ul>
         </section>
 
         <section className="grid md:grid-cols-3 gap-6 mb-16">
@@ -301,20 +329,14 @@ export default function SponsorsPage() {
                 can change plans, update payment methods, or cancel anytime.
               </p>
             </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">What about coins?</h3>
-              <p className="text-muted-foreground text-sm">
-                Coins are a separate in-app feature for participating in challenges. Coins have no cash 
-                value and cannot be purchased through the sponsorship program.
-              </p>
-            </div>
           </div>
         </section>
 
         <section className="text-center mb-12 p-6 rounded-lg border border-border/50 bg-card/30">
           <p className="text-sm text-muted-foreground">
-            <strong className="text-foreground">Important:</strong> Sponsor subscriptions are purchased 
-            and managed on the web. The mobile app only links out to this page.
+            <strong className="text-foreground">Note:</strong> All tiers require Influencer membership ($9.99/mo) as a prerequisite. 
+            Sponsored challenge coins are held in escrow until the challenge ends, then distributed to the winner. 
+            Coins have no cash value. Sponsor subscriptions are purchased and managed on the web.
           </p>
         </section>
 
