@@ -94,10 +94,13 @@ function TierCard({ tier, onSelect, loading }: {
           ))}
         </ul>
         <Button
-          className="w-full rounded-full font-semibold text-black"
+          className={`w-full rounded-full font-semibold text-black ${tier.id === 'starter' ? 'bg-yellow-500 hover:bg-yellow-400' : tier.id === 'pro' ? 'bg-blue-500 hover:bg-blue-400' : 'bg-purple-500 hover:bg-purple-400'}`}
           style={{
-            background: "#39FF14",
-            boxShadow: "0 0 20px rgba(57, 255, 20, 0.4)"
+            boxShadow: tier.id === 'starter' 
+              ? "0 0 20px rgba(234, 179, 8, 0.4)" 
+              : tier.id === 'pro' 
+                ? "0 0 20px rgba(59, 130, 246, 0.4)" 
+                : "0 0 20px rgba(168, 85, 247, 0.4)"
           }}
           onClick={() => onSelect(tier.id)}
           disabled={isDisabled}
