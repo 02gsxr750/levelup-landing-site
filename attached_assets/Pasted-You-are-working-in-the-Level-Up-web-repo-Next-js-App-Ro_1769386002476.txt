@@ -1,0 +1,119 @@
+You are working in the Level Up web repo (Next.js App Router). Build a production-ready Sponsor page at:
+
+  /sponsors
+
+This page must match our “About page rules”:
+- Clean, direct, competitive tone (Level Up is votes not comments; debate lives in content; bragging rights + exposure; leaderboard-driven, not algorithm-driven).
+- Keep it compliant: Purchases happen on the WEBSITE only via Stripe (no in-app purchase flow). Include a clear disclaimer: “Sponsor subscriptions are purchased and managed on the web. The mobile app only links out to this page.”
+- Keep coins disclaimer consistent: “Coins have no cash value.”
+
+GOAL
+Create a full sponsor marketing page + Stripe web flows that support:
+1) Purchase (new subscription) for Starter / Pro / Elite via Stripe Checkout
+2) Manage subscription (upgrade/downgrade/cancel/payment method) via Stripe Billing Portal
+
+ASSUMPTIONS / INPUTS (use env + placeholder if unknown)
+- We already have Stripe webhooks provisioning sponsor status in Supabase (do not rebuild webhooks here).
+- We will create checkout sessions and portal sessions from the web server (Next.js route handlers).
+- Pricing is defined in Stripe with 3 recurring Prices:
+  STARTER_PRICE_ID, PRO_PRICE_ID, ELITE_PRICE_ID
+- If we can determine the logged-in user, we should attach metadata for provisioning alignment:
+  metadata: { user_id, profile_id, tier }
+- Auth: If the site already has Supabase auth, use it to get the current user/profile. If not available, still allow checkout, but at minimum pass customer_email if we have it. Do not block shipping this page just because auth details differ—degrade gracefully.
+
+WHAT TO BUILD (FILES)
+1) Page UI
+- Create: web/app/sponsors/page.tsx
+- A clean layout:
+  - Hero: “Sponsor Level Up” + subheader
+  - 3 tier cards (Starter, Pro, Elite) with short bullet features aligned to our sponsor program:
+    Starter: featured sponsor challenge placement + basic sponsor badge
+    Pro: featured + periodic feed placement (approx every 25 items) + better prominence
+    Elite: higher frequency (approx every 12 items) + top priority prominence
+  - Each card shows price placeholder (not hardcoded if you can’t reliably fetch) and a CTA:
+      “Choose Starter / Choose Pro / Choose Elite”
+  - A separate section: “Already a sponsor?” with button:
+      “Manage Subscription”
+  - FAQ with compliance language:
+      - Web-only purchases & management
+      - Cancel anytime in portal
+      - When benefits activate (after successful checkout; provisioning via webhook)
+      - Coins have no cash value (if mentioned)
+  - Footer links: Privacy, Terms
+
+2) Stripe Checkout Session API
+- Create: web/app/api/stripe/sponsors/checkout/route.ts
+- POST accepts JSON: { tier: "starter"|"pro"|"elite", returnPath?: string }
+- Server validates tier -> selects correct price id from env:
+    STRIPE_SPONSOR_STARTER_PRICE_ID
+    STRIPE_SPONSOR_PRO_PRICE_ID
+    STRIPE_SPONSOR_ELITE_PRICE_ID
+- Create Stripe Checkout Session (subscription mode):
+    mode: "subscription"
+    line_items: [{ price: PRICE_ID, quantity: 1 }]
+    allow_promotion_codes: true (optional)
+    success_url: `${SITE_URL}/sponsors/success?session_id={CHECKOUT_SESSION_ID}`
+    cancel_url: `${SITE_URL}/sponsors`
+- Attach metadata if user is known:
+    metadata: { tier, user_id, profile_id }
+- If user email known, set customer_email.
+- Return JSON: { url: session.url }
+
+3) Stripe Billing Portal API
+- Create: web/app/api/stripe/sponsors/portal/route.ts
+- POST creates a billing portal session for the sponsor’s Stripe customer
+- You must find the Stripe customer id for the current user.
+  - If the app already stores stripe_customer_id in Supabase (profiles table or a billing table), fetch it.
+  - If unknown, attempt lookup by email using Stripe Customer search (only if you have permission; otherwise return a friendly error that instructs user to contact support).
+- Return JSON: { url: portalSession.url }
+- Return URL back to `${SITE_URL}/sponsors`
+
+4) Success Page
+- Create: web/app/sponsors/success/page.tsx
+- Shows “You’re in. Sponsorship activating…” + explains provisioning happens automatically (webhook) and may take a moment.
+- Button: “Back to Sponsors” and “Open App” (optional deep link if we already have one; otherwise omit).
+
+5) Client actions
+- On /sponsors page:
+  - Clicking a tier CTA calls POST /api/stripe/sponsors/checkout with { tier } then redirects browser to returned url
+  - Clicking “Manage Subscription” calls POST /api/stripe/sponsors/portal then redirects to returned url
+- Use a small client component for the buttons (loading state + error toast). Keep it minimal.
+
+6) Configuration + Safety
+- Add env requirements (do not commit secrets):
+    STRIPE_SECRET_KEY
+    STRIPE_SPONSOR_STARTER_PRICE_ID
+    STRIPE_SPONSOR_PRO_PRICE_ID
+    STRIPE_SPONSOR_ELITE_PRICE_ID
+    NEXT_PUBLIC_SITE_URL (e.g. https://joinlevelupapp.com)
+- Ensure route handlers are server-only and never expose secret keys.
+- Use Stripe API version default; use official stripe sdk.
+- Add basic validation + error handling (return 400 on bad tier, 500 on Stripe errors).
+
+7) Notes on Upgrade/Downgrade/Cancel
+- Do NOT build custom upgrade/downgrade UI.
+- We rely on Stripe Billing Portal configuration to allow:
+    - plan changes (upgrade/downgrade)
+    - cancellation
+    - payment method update
+- Put copy on the page that clearly says: “Manage, upgrade, downgrade, or cancel anytime in the billing portal.”
+
+IMPLEMENTATION DETAILS
+- If the repo already has a Stripe helper (e.g., web/lib/stripe.ts) use it. Otherwise create one:
+    web/lib/stripe.ts:
+      import Stripe from "stripe";
+      export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "..." as any });
+- If the repo already uses Supabase server client helpers, use them to fetch user + stripe_customer_id.
+
+DELIVERABLES
+- Provide the exact code changes for all created files and any modified files.
+- Keep styling consistent with Level Up: black background, clean sections, bold headings, neon accent optional, but keep it readable.
+- Do not change any existing sponsor provisioning/webhook logic.
+
+After implementing, output:
+- The URLs that should work:
+    /sponsors
+    /sponsors/success
+- Example curl commands for testing checkout + portal endpoints.
+
+Start now. 
