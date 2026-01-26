@@ -21,6 +21,10 @@ function Header() {
   const goToAbout = () => {
     window.location.href = "/about";
   };
+
+  const goToSponsors = () => {
+    window.location.href = "/sponsors";
+  };
   
   return (
     <header className="flex items-center justify-end gap-2 flex-wrap mb-12">
@@ -31,6 +35,14 @@ function Header() {
           onClick={goToAbout}
         >
           About
+        </Button>
+        <Button
+          variant="outline"
+          data-testid="nav-link-sponsors"
+          onClick={goToSponsors}
+          className="rounded-full"
+        >
+          Become a Sponsor
         </Button>
       </nav>
     </header>
