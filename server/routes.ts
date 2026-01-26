@@ -8,9 +8,11 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   
-  const SITE_URL = process.env.SITE_URL || process.env.REPLIT_DEV_DOMAIN 
-    ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
-    : "http://localhost:5000";
+  const SITE_URL = process.env.SITE_URL ?? (
+    process.env.REPLIT_DEV_DOMAIN 
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
+      : "http://localhost:5000"
+  );
 
   // Stripe Sponsor Checkout Session
   app.post("/api/stripe/sponsors/checkout", async (req, res) => {
