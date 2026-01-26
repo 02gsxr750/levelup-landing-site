@@ -1,0 +1,40 @@
+You are working in the Level Up web repo (Next.js App Router). Make TWO focused changes on the /sponsors page and related Stripe portal flow.
+
+DO NOT change the tier pricing, checkout wiring, or sponsor tier feature bullets. Keep styling consistent.
+
+CHANGE #1 — Fix Starter card header label
+On the Starter tier card, the small pill/header currently says “SPONSORED”.
+Change it to exactly: “STARTER SPONSOR”
+Do not change the Pro/Elite headers.
+
+CHANGE #2 — Remove the email input from “Already a Sponsor?” and make portal access automatic
+Goal: The “Manage Subscription” button should take the logged-in user directly to Stripe Billing Portal without asking for an email.
+
+Requirements:
+- Remove the email input field entirely from the UI.
+- The “Manage Subscription” button should call POST /api/stripe/sponsors/portal with no body.
+- The portal API must determine the current user from Supabase auth (server-side) and find that user’s Stripe customer id.
+- If the user is not logged in, show a clear on-page message and a button that routes to the login page (or opens the login modal if the site uses that). Keep it simple:
+  - Message: “Please sign in to manage your sponsor subscription.”
+  - Button: “Sign In”
+- If the user is logged in but no Stripe customer/subscription is found, show:
+  - “No active sponsor subscription found for this account.”
+
+Stripe customer lookup rules (use best available data in our DB first):
+1) If we store stripe_customer_id on profiles (or a billing table), use it.
+2) Otherwise, use the authenticated user’s email to look up the Stripe customer ONE time, then persist stripe_customer_id back to the user record for future requests.
+
+Do NOT expose raw Stripe errors to the UI.
+
+Implementation notes:
+- Use the existing Supabase server client helper used elsewhere in the repo (createServerClient / cookies auth).
+- Use existing DB schema if present; do not invent new tables unless absolutely necessary.
+- If you must add a column, prefer adding `stripe_customer_id` to profiles (nullable text) and update it when discovered.
+- Portal session should return to `${NEXT_PUBLIC_SITE_URL}/sponsors`.
+
+DELIVERABLES:
+- Provide a diff of the files changed.
+- Confirm these flows work:
+  1) Logged in → click “Manage Subscription” → goes to Stripe Billing Portal
+  2) Logged out → “Manage Subscription” shows sign-in message and “Sign In” button
+  3) Logged in with no subscription → shows “No active sponsor subscription found for this account.”

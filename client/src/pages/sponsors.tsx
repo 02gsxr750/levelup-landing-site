@@ -13,7 +13,7 @@ const tiers = [
     name: "Starter Sponsor",
     price: "$49/month",
     badgeEmoji: "🌱",
-    badgeLabel: "SPONSORED",
+    badgeLabel: "STARTER SPONSOR",
     borderColor: "border-yellow-500",
     textColor: "text-yellow-400",
     bgGradient: "from-yellow-900/20 to-amber-800/10",
