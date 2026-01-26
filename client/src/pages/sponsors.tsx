@@ -72,6 +72,35 @@ const tiers = [
   },
 ];
 
+// TEMP DEBUG: Supabase configuration diagnostics
+function getSupabaseDebugInfo() {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const siteUrl = import.meta.env.VITE_SITE_URL;
+  
+  let hostname = "N/A";
+  if (url) {
+    try {
+      hostname = new URL(url).hostname;
+    } catch {
+      hostname = "INVALID_URL";
+    }
+  }
+  
+  return {
+    hasUrl: !!url,
+    hasKey: !!key,
+    hasSiteUrl: !!siteUrl,
+    hostname,
+    keyPrefix: key ? key.substring(0, 6) : "N/A",
+  };
+}
+
+function isDebugMode() {
+  const params = new URLSearchParams(window.location.search);
+  return import.meta.env.DEV || params.get("debug") === "1";
+}
+
 function AuthModal({ 
   isOpen, 
   onClose, 
@@ -86,6 +115,9 @@ function AuthModal({
   const [step, setStep] = useState<"email" | "otp">("email");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  
+  const showDebug = isDebugMode();
+  const debugInfo = getSupabaseDebugInfo();
 
   const handleSendCode = async () => {
     if (!email.trim()) {
@@ -96,6 +128,9 @@ function AuthModal({
       });
       return;
     }
+
+    // TEMP DEBUG: Log Supabase config before OTP call
+    console.log("[DEBUG] Supabase config before signInWithOtp:", debugInfo);
 
     if (!supabase) {
       toast({
@@ -278,6 +313,16 @@ function AuthModal({
                 Use a different email
               </Button>
             </>
+          )}
+          {/* TEMP DEBUG: Supabase config diagnostics */}
+          {showDebug && (
+            <div className="mt-4 pt-4 border-t border-border/50 font-mono text-xs text-muted-foreground" data-testid="debug-supabase-info">
+              <p>VITE_SUPABASE_URL: {debugInfo.hasUrl ? "true" : "false"}</p>
+              <p>VITE_SUPABASE_ANON_KEY: {debugInfo.hasKey ? "true" : "false"}</p>
+              <p>VITE_SITE_URL: {debugInfo.hasSiteUrl ? "true" : "false"}</p>
+              <p>Hostname: {debugInfo.hostname}</p>
+              <p>Key prefix: {debugInfo.keyPrefix}</p>
+            </div>
           )}
         </CardContent>
       </Card>
