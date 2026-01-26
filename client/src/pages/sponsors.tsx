@@ -73,7 +73,7 @@ function TierCard({ tier, onSelect, loading }: {
   const isDisabled = loading !== null;
 
   return (
-    <Card className={`relative overflow-visible backdrop-blur border-2 ${tier.borderColor} bg-gradient-to-br ${tier.bgGradient}`}>
+    <Card className={`relative overflow-visible backdrop-blur border-2 ${tier.borderColor} bg-gradient-to-br ${tier.bgGradient} h-full flex flex-col`}>
       {tier.popular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full">
           Most Popular
@@ -88,8 +88,8 @@ function TierCard({ tier, onSelect, loading }: {
           {tier.price}
         </p>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <ul className="space-y-2">
+      <CardContent className="flex flex-col flex-1">
+        <ul className="space-y-2 flex-1">
           {tier.features.map((feature, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
               <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#39FF14" }} />
@@ -98,7 +98,7 @@ function TierCard({ tier, onSelect, loading }: {
           ))}
         </ul>
         <Button
-          className={`w-full rounded-full font-semibold text-black ${tier.id === 'starter' ? 'bg-yellow-500 hover:bg-yellow-400' : tier.id === 'pro' ? 'bg-blue-500 hover:bg-blue-400' : 'bg-purple-500 hover:bg-purple-400'}`}
+          className={`w-full rounded-full font-semibold text-black mt-4 ${tier.id === 'starter' ? 'bg-yellow-500 hover:bg-yellow-400' : tier.id === 'pro' ? 'bg-blue-500 hover:bg-blue-400' : 'bg-purple-500 hover:bg-purple-400'}`}
           style={{
             boxShadow: tier.id === 'starter' 
               ? "0 0 20px rgba(234, 179, 8, 0.4)" 
