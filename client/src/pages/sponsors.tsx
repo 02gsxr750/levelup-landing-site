@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Check, Loader2, Crown, Star, Zap } from "lucide-react";
+import { ArrowLeft, Check, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type Tier = "starter" | "pro" | "elite";
@@ -10,10 +10,13 @@ type Tier = "starter" | "pro" | "elite";
 const tiers = [
   {
     id: "starter" as Tier,
-    name: "Starter",
-    price: "$49/mo",
-    icon: Zap,
-    color: "from-cyan-500 to-blue-500",
+    name: "Starter Sponsor",
+    price: "$49/month",
+    badgeEmoji: "✨",
+    badgeLabel: "SPONSORED",
+    borderColor: "border-yellow-500",
+    textColor: "text-yellow-400",
+    bgGradient: "from-yellow-900/20 to-amber-800/10",
     features: [
       "Featured sponsor challenge placement",
       "Basic sponsor badge on profile",
@@ -22,10 +25,13 @@ const tiers = [
   },
   {
     id: "pro" as Tier,
-    name: "Pro",
-    price: "$149/mo",
-    icon: Star,
-    color: "from-purple-500 to-pink-500",
+    name: "Pro Sponsor",
+    price: "$149/month",
+    badgeEmoji: "⭐",
+    badgeLabel: "PRO SPONSOR",
+    borderColor: "border-blue-500",
+    textColor: "text-blue-400",
+    bgGradient: "from-blue-900/20 to-cyan-800/10",
     popular: true,
     features: [
       "Everything in Starter",
@@ -36,10 +42,13 @@ const tiers = [
   },
   {
     id: "elite" as Tier,
-    name: "Elite",
-    price: "$349/mo",
-    icon: Crown,
-    color: "from-orange-500 to-red-500",
+    name: "Elite Sponsor",
+    price: "$349/month",
+    badgeEmoji: "👑",
+    badgeLabel: "ELITE SPONSOR",
+    borderColor: "border-purple-500",
+    textColor: "text-purple-400",
+    bgGradient: "from-purple-900/20 to-gray-800/10",
     features: [
       "Everything in Pro",
       "Higher frequency feed placement (~every 12 items)",
@@ -55,39 +64,40 @@ function TierCard({ tier, onSelect, loading }: {
   onSelect: (id: Tier) => void;
   loading: Tier | null;
 }) {
-  const Icon = tier.icon;
   const isLoading = loading === tier.id;
   const isDisabled = loading !== null;
 
   return (
-    <Card className={`relative overflow-visible bg-card/50 backdrop-blur border-border/50 ${tier.popular ? 'ring-2 ring-purple-500' : ''}`}>
+    <Card className={`relative overflow-visible backdrop-blur border-2 ${tier.borderColor} bg-gradient-to-br ${tier.bgGradient}`}>
       {tier.popular && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-purple-500 text-white text-xs font-semibold rounded-full">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full">
           Most Popular
         </div>
       )}
       <CardHeader className="text-center pb-4">
-        <div className={`mx-auto w-12 h-12 rounded-full bg-gradient-to-br ${tier.color} flex items-center justify-center mb-3`}>
-          <Icon className="w-6 h-6 text-white" />
+        <div className="text-4xl mb-3">{tier.badgeEmoji}</div>
+        <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${tier.textColor} border ${tier.borderColor} mb-3`}>
+          {tier.badgeLabel}
         </div>
-        <CardTitle className="text-xl text-foreground">{tier.name}</CardTitle>
-        <CardDescription className="text-2xl font-bold text-foreground mt-2">
+        <h3 className={`text-xl font-bold ${tier.textColor}`}>{tier.name}</h3>
+        <p className="text-2xl font-bold text-foreground mt-2">
           {tier.price}
-        </CardDescription>
+        </p>
       </CardHeader>
       <CardContent className="space-y-4">
         <ul className="space-y-2">
           {tier.features.map((feature, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-              <Check className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+              <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#39FF14" }} />
               <span>{feature}</span>
             </li>
           ))}
         </ul>
         <Button
-          className="w-full rounded-full font-semibold"
+          className="w-full rounded-full font-semibold text-black"
           style={{
-            background: `linear-gradient(135deg, ${tier.color.includes('cyan') ? '#00d4ff, #6366f1' : tier.color.includes('purple') ? '#a855f7, #ec4899' : '#f97316, #ef4444'})`,
+            background: "#39FF14",
+            boxShadow: "0 0 20px rgba(57, 255, 20, 0.4)"
           }}
           onClick={() => onSelect(tier.id)}
           disabled={isDisabled}
@@ -99,7 +109,7 @@ function TierCard({ tier, onSelect, loading }: {
               Redirecting...
             </>
           ) : (
-            `Choose ${tier.name}`
+            `Choose ${tier.name.split(" ")[0]}`
           )}
         </Button>
       </CardContent>
