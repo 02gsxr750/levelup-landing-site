@@ -1,0 +1,96 @@
+You are working in the Level Up website (Next.js App Router). Implement a “public marketing / gated purchase” flow on /sponsors.
+
+GOAL
+- Anyone can view /sponsors (no login required).
+- Users must authenticate ONLY when they try to:
+  1) Purchase a sponsor tier (Starter/Pro/Elite)
+  2) Open “Manage Subscription” (billing portal)
+- Authentication must use Supabase Auth (OTP / magic link is fine).
+- After login, enforce: user must be an Influencer member before starting Sponsor checkout.
+- Stripe Checkout sessions MUST include metadata so webhooks can provision the correct profile:
+  metadata: { user_id, profile_id, sponsor_tier }
+
+DO NOT
+- Do not lock the whole page behind login
+- Do not change sponsor tier copy/benefits/pricing
+- Do not rebuild webhook provisioning logic
+- Do not add unrelated pages
+
+STEP A — Add minimal auth UI (only shown when needed)
+On /sponsors:
+- Keep all marketing content visible.
+- Add a lightweight modal (or inline panel) that appears ONLY when a gated action is clicked and user is not logged in.
+  Text:
+    Title: “Sign in to continue”
+    Body: “To purchase or manage a sponsor subscription, sign in to your Level Up account.”
+  Inputs:
+    - Email
+  Button:
+    - “Send Code” (OTP / magic link)
+  Then show:
+    - Code input (6-digit) OR “Check your email” based on your auth method.
+
+Use the simplest Supabase Auth method already used in the repo (if any).
+If none exists, implement email OTP (passwordless).
+
+STEP B — Determine current user + profile and influencer status
+After login, fetch the user profile from Supabase and determine influencer status using the existing schema.
+- If your schema has profiles.is_influencer boolean, use that.
+- If it uses tier == 'influencer' or role, use that.
+- If influencer status is derived from a subscriptions table, use that existing lookup.
+
+Enforcement:
+- If NOT influencer, block sponsor purchase and show:
+  “Influencer membership is required before accessing Sponsor Program.”
+  Provide a button/link:
+  “Become an Influencer”
+  (Link to the existing influencer purchase flow or instructions page. If none exists on this site, link to the main marketing page or a placeholder URL and leave a TODO comment.)
+
+STEP C — Update Stripe sponsor checkout endpoint to require auth
+Modify POST /api/stripe/sponsors/checkout:
+- Require authenticated Supabase user (server-side)
+- Load their profile_id (and influencer status if you want to double-check server-side)
+- Validate tier: starter|pro|elite
+- Create Stripe Checkout Session (subscription) using the correct PRICE_ID
+- Attach metadata:
+    { sponsor_tier: tier, user_id: supabaseUser.id, profile_id: profile.id }
+- Also set customer_email = supabaseUser.email (if present)
+- Return { url }
+
+If user is not authenticated server-side, return 401.
+
+STEP D — Update Stripe billing portal endpoint to require auth (remove email input flow)
+Modify POST /api/stripe/sponsors/portal:
+- Require authenticated Supabase user (server-side)
+- Find Stripe customer id for THIS profile:
+  Preferred: profiles.stripe_customer_id (or your existing billing field)
+  If missing: look up Stripe customer by supabaseUser.email, pick the most recent active customer, then persist stripe_customer_id back onto the profile for next time.
+- Create Stripe Billing Portal session and return { url }
+
+If user is not authenticated server-side, return 401.
+
+STEP E — Wire the page buttons
+On /sponsors page:
+- Tier buttons:
+  - If user not logged in → open auth modal/panel
+  - If logged in and influencer → call checkout endpoint and redirect to Stripe
+  - If logged in and not influencer → show the influencer requirement message
+- Manage Subscription button:
+  - If user not logged in → open auth modal/panel
+  - If logged in → call portal endpoint and redirect
+
+IMPORTANT UX DETAILS
+- Keep marketing content unchanged and always visible.
+- Keep the sponsor tier copy exactly as currently approved.
+- Add a small line under CTAs:
+  “Purchases and subscription management happen on the web. The app links here for convenience.”
+- Do not show raw Stripe errors; show friendly messages.
+
+DELIVERABLES
+- Provide a diff of the files changed/added.
+- Confirm these scenarios:
+  1) Unauthenticated visitor can read /sponsors fully
+  2) Clicking “Choose Pro” triggers sign-in, then proceeds if influencer
+  3) Non-influencer is blocked with the correct message
+  4) Checkout session contains metadata user_id/profile_id/sponsor_tier
+  5) “Manage Subscription” works without asking for email after login
