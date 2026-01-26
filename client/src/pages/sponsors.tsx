@@ -183,16 +183,22 @@ export default function SponsorsPage() {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.error || "Failed to access billing portal");
+        if (response.status === 404) {
+          throw new Error("No active sponsor subscription found for this email.");
+        }
+        throw new Error("We couldn't access your subscription. Please try again or contact support.");
       }
       
       if (data.url) {
         window.location.href = data.url;
       }
     } catch (error: any) {
+      const friendlyMessage = error.message.includes("No active sponsor") || error.message.includes("couldn't access")
+        ? error.message
+        : "We couldn't access your subscription. Please try again or contact support.";
       toast({
         title: "Error",
-        description: error.message || "Something went wrong. Please try again.",
+        description: friendlyMessage,
         variant: "destructive",
       });
     } finally {
@@ -268,20 +274,23 @@ export default function SponsorsPage() {
         <section className="max-w-md mx-auto mb-16">
           <Card className="bg-card/50 backdrop-blur border-border/50">
             <CardHeader className="text-center">
-              <CardTitle className="text-foreground">Already a Sponsor?</CardTitle>
+              <CardTitle className="text-foreground">Already a Sponsor? Manage Your Subscription</CardTitle>
               <CardDescription>
                 Manage, upgrade, downgrade, or cancel anytime in the billing portal.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-background/50"
-                data-testid="input-portal-email"
-              />
+              <div className="space-y-1">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-background/50"
+                  data-testid="input-portal-email"
+                />
+                <p className="text-xs text-muted-foreground">Use the email you used during checkout.</p>
+              </div>
               <Button
                 variant="outline"
                 className="w-full rounded-full"
