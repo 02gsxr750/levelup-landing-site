@@ -80,7 +80,6 @@ function TierCard({ tier, onSelect, loading }: {
         </div>
       )}
       <CardHeader className="text-center pb-4">
-        <div className="text-4xl mb-3">{tier.badgeEmoji}</div>
         <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${tier.textColor} border ${tier.borderColor} mb-3`}>
           {tier.badgeLabel}
         </div>
@@ -232,8 +231,8 @@ export default function SponsorsPage() {
         </section>
 
         <section className="max-w-2xl mx-auto mb-12 p-6 rounded-lg border border-yellow-500/50 bg-yellow-900/10">
-          <h2 className="text-lg font-bold text-yellow-400 mb-4 flex items-center gap-2">
-            <span>⚠️</span> Requirements
+          <h2 className="text-lg font-bold text-yellow-400 mb-4">
+            Requirements
           </h2>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
