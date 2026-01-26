@@ -1,18 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Loader2, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 type Tier = "starter" | "pro" | "elite";
+
+type AuthUser = {
+  id: string;
+  email?: string;
+} | null;
+
+type Profile = {
+  id: string;
+  is_influencer?: boolean;
+} | null;
 
 const tiers = [
   {
     id: "starter" as Tier,
     name: "Starter Sponsor",
     price: "$49/month",
-    badgeEmoji: "🌱",
     badgeLabel: "STARTER SPONSOR",
     borderColor: "border-yellow-500",
     textColor: "text-yellow-400",
@@ -29,7 +39,6 @@ const tiers = [
     id: "pro" as Tier,
     name: "Pro Sponsor",
     price: "$149/month",
-    badgeEmoji: "⚡",
     badgeLabel: "PRO SPONSOR",
     borderColor: "border-blue-500",
     textColor: "text-blue-400",
@@ -48,7 +57,6 @@ const tiers = [
     id: "elite" as Tier,
     name: "Elite Sponsor",
     price: "$399/month",
-    badgeEmoji: "👑",
     badgeLabel: "ELITE SPONSOR",
     borderColor: "border-purple-500",
     textColor: "text-purple-400",
@@ -63,6 +71,266 @@ const tiers = [
     ],
   },
 ];
+
+function AuthModal({ 
+  isOpen, 
+  onClose, 
+  onSuccess 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState<"email" | "otp">("email");
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleSendCode = async () => {
+    if (!email.trim()) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Authentication is not available. Please try again later.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          shouldCreateUser: false,
+        },
+      });
+
+      if (error) {
+        if (error.message.includes("not found") || error.message.includes("Signups not allowed")) {
+          throw new Error("No account found with this email. Please use the Level Up app to create an account first.");
+        }
+        throw error;
+      }
+
+      setStep("otp");
+      toast({
+        title: "Code sent",
+        description: "Check your email for the verification code.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send code. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    if (!otp.trim()) {
+      toast({
+        title: "Code required",
+        description: "Please enter the verification code.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Authentication is not available. Please try again later.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: email.trim(),
+        token: otp.trim(),
+        type: "email",
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Signed in",
+        description: "You are now signed in.",
+      });
+      onSuccess();
+      onClose();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Invalid code. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setEmail("");
+    setOtp("");
+    setStep("email");
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <Card className="w-full max-w-md mx-4 bg-card border-border">
+        <CardHeader className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-2 top-2"
+            onClick={handleClose}
+            data-testid="button-close-auth-modal"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+          <CardTitle className="text-foreground">Sign in to continue</CardTitle>
+          <CardDescription>
+            To purchase or manage a sponsor subscription, sign in to your Level Up account.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {step === "email" ? (
+            <>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-background/50"
+                data-testid="input-auth-email"
+                onKeyDown={(e) => e.key === "Enter" && handleSendCode()}
+              />
+              <Button
+                className="w-full rounded-full"
+                onClick={handleSendCode}
+                disabled={loading}
+                data-testid="button-send-code"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  "Send Code"
+                )}
+              </Button>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-muted-foreground">
+                Enter the 6-digit code sent to <strong>{email}</strong>
+              </p>
+              <Input
+                type="text"
+                placeholder="Enter verification code"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="bg-background/50 text-center text-lg tracking-widest"
+                maxLength={6}
+                data-testid="input-auth-otp"
+                onKeyDown={(e) => e.key === "Enter" && handleVerifyCode()}
+              />
+              <Button
+                className="w-full rounded-full"
+                onClick={handleVerifyCode}
+                disabled={loading}
+                data-testid="button-verify-code"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  "Verify Code"
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full"
+                onClick={() => setStep("email")}
+                data-testid="button-back-to-email"
+              >
+                Use a different email
+              </Button>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function InfluencerRequiredModal({ 
+  isOpen, 
+  onClose 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void;
+}) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <Card className="w-full max-w-md mx-4 bg-card border-border">
+        <CardHeader className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-2 top-2"
+            onClick={onClose}
+            data-testid="button-close-influencer-modal"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+          <CardTitle className="text-foreground">Influencer Membership Required</CardTitle>
+          <CardDescription>
+            Influencer membership is required before accessing the Sponsor Program.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            To become a sponsor, you must first be an Influencer member ($9.99/mo). 
+            You can upgrade to Influencer in the Level Up app.
+          </p>
+          <Button
+            className="w-full rounded-full"
+            onClick={() => {
+              window.location.href = "https://joinlevelupapp.com";
+            }}
+            data-testid="button-become-influencer"
+          >
+            Become an Influencer
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 function TierCard({ tier, onSelect, loading }: { 
   tier: typeof tiers[0]; 
@@ -128,19 +396,116 @@ export default function SponsorsPage() {
   const [loadingTier, setLoadingTier] = useState<Tier | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [user, setUser] = useState<AuthUser>(null);
+  const [profile, setProfile] = useState<Profile>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showInfluencerModal, setShowInfluencerModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{ type: "checkout"; tier: Tier } | { type: "portal" } | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!supabase) {
+      setAuthLoading(false);
+      return;
+    }
+
+    const sb = supabase;
+    const checkAuth = async () => {
+      try {
+        const { data: { user: authUser } } = await sb.auth.getUser();
+        if (authUser) {
+          setUser({ id: authUser.id, email: authUser.email });
+          
+          const { data: profileData } = await sb
+            .from("profiles")
+            .select("id, is_influencer")
+            .eq("user_id", authUser.id)
+            .single();
+          
+          if (profileData) {
+            setProfile(profileData);
+          }
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
+        setUser({ id: session.user.id, email: session.user.email });
+        
+        const { data: profileData } = await sb
+          .from("profiles")
+          .select("id, is_influencer")
+          .eq("user_id", session.user.id)
+          .single();
+        
+        if (profileData) {
+          setProfile(profileData);
+        }
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
+        setProfile(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (pendingAction && user && profile) {
+      if (pendingAction.type === "checkout") {
+        if (profile.is_influencer) {
+          proceedToCheckout(pendingAction.tier);
+        } else {
+          setShowInfluencerModal(true);
+        }
+      } else if (pendingAction.type === "portal") {
+        proceedToPortal();
+      }
+      setPendingAction(null);
+    }
+  }, [user, profile, pendingAction]);
 
   const goToHome = () => {
     window.location.href = "/";
   };
 
-  const handleSelectTier = async (tier: Tier) => {
+  const handleAuthSuccess = async () => {
+    if (!supabase) return;
+    
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (authUser) {
+      setUser({ id: authUser.id, email: authUser.email });
+      
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("id, is_influencer")
+        .eq("user_id", authUser.id)
+        .single();
+      
+      if (profileData) {
+        setProfile(profileData);
+      }
+    }
+  };
+
+  const proceedToCheckout = async (tier: Tier) => {
     setLoadingTier(tier);
     try {
       const response = await fetch("/api/stripe/sponsors/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tier }),
+        credentials: "include",
       });
       
       const data = await response.json();
@@ -162,7 +527,67 @@ export default function SponsorsPage() {
     }
   };
 
+  const handleSelectTier = async (tier: Tier) => {
+    if (!user) {
+      setPendingAction({ type: "checkout", tier });
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (!profile?.is_influencer) {
+      setShowInfluencerModal(true);
+      return;
+    }
+
+    proceedToCheckout(tier);
+  };
+
+  const proceedToPortal = async () => {
+    setPortalLoading(true);
+    try {
+      const response = await fetch("/api/stripe/sponsors/portal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error("No active sponsor subscription found for this account.");
+        }
+        throw new Error("We couldn't access your subscription. Please try again or contact support.");
+      }
+      
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error: any) {
+      const friendlyMessage = error.message.includes("No active sponsor") || error.message.includes("couldn't access")
+        ? error.message
+        : "We couldn't access your subscription. Please try again or contact support.";
+      toast({
+        title: "Error",
+        description: friendlyMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setPortalLoading(false);
+    }
+  };
+
   const handleManageSubscription = async () => {
+    if (!user) {
+      setPendingAction({ type: "portal" });
+      setShowAuthModal(true);
+      return;
+    }
+
+    proceedToPortal();
+  };
+
+  const handleManageSubscriptionWithEmail = async () => {
     if (!email.trim()) {
       toast({
         title: "Email required",
@@ -206,6 +631,13 @@ export default function SponsorsPage() {
     }
   };
 
+  const handleSignOut = async () => {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
+  };
+
   return (
     <div 
       className="min-h-screen"
@@ -213,8 +645,21 @@ export default function SponsorsPage() {
         background: "radial-gradient(ellipse at top, #1a0a2e 0%, #0d0518 40%, #050509 100%)"
       }}
     >
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => {
+          setShowAuthModal(false);
+          setPendingAction(null);
+        }}
+        onSuccess={handleAuthSuccess}
+      />
+      <InfluencerRequiredModal 
+        isOpen={showInfluencerModal} 
+        onClose={() => setShowInfluencerModal(false)}
+      />
+      
       <div className="max-w-[1200px] mx-auto px-4 py-6 pb-16">
-        <header className="mb-8">
+        <header className="mb-8 flex justify-between items-center">
           <Button
             variant="ghost"
             data-testid="button-back-home"
@@ -224,6 +669,33 @@ export default function SponsorsPage() {
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </Button>
+          
+          {!authLoading && (
+            user ? (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-muted-foreground">
+                  {user.email}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSignOut}
+                  data-testid="button-sign-out"
+                >
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAuthModal(true)}
+                data-testid="button-sign-in"
+              >
+                Sign In
+              </Button>
+            )
+          )}
         </header>
 
         <section className="text-center mb-8">
@@ -260,7 +732,7 @@ export default function SponsorsPage() {
           </ul>
         </section>
 
-        <section className="grid md:grid-cols-3 gap-6 mb-16">
+        <section className="grid md:grid-cols-3 gap-6 mb-8">
           {tiers.map((tier) => (
             <TierCard 
               key={tier.id} 
@@ -271,6 +743,10 @@ export default function SponsorsPage() {
           ))}
         </section>
 
+        <p className="text-center text-xs text-muted-foreground mb-16">
+          Purchases and subscription management happen on the web. The app links here for convenience.
+        </p>
+
         <section className="max-w-md mx-auto mb-16">
           <Card className="bg-card/50 backdrop-blur border-border/50">
             <CardHeader className="text-center">
@@ -280,33 +756,69 @@ export default function SponsorsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-1">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-background/50"
-                  data-testid="input-portal-email"
-                />
-                <p className="text-xs text-muted-foreground">Use the email you used during checkout.</p>
-              </div>
-              <Button
-                variant="outline"
-                className="w-full rounded-full"
-                onClick={handleManageSubscription}
-                disabled={portalLoading}
-                data-testid="button-manage-subscription"
-              >
-                {portalLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Loading...
-                  </>
-                ) : (
-                  "Manage Subscription"
-                )}
-              </Button>
+              {user ? (
+                <>
+                  <p className="text-sm text-muted-foreground text-center">
+                    Signed in as <strong>{user.email}</strong>
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-full"
+                    onClick={handleManageSubscription}
+                    disabled={portalLoading}
+                    data-testid="button-manage-subscription"
+                  >
+                    {portalLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      "Manage Subscription"
+                    )}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-1">
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="bg-background/50"
+                      data-testid="input-portal-email"
+                    />
+                    <p className="text-xs text-muted-foreground">Use the email you used during checkout.</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-full"
+                    onClick={handleManageSubscriptionWithEmail}
+                    disabled={portalLoading}
+                    data-testid="button-manage-subscription"
+                  >
+                    {portalLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      "Manage Subscription"
+                    )}
+                  </Button>
+                  <div className="text-center">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowAuthModal(true)}
+                      data-testid="button-sign-in-portal"
+                    >
+                      Or sign in to your account
+                    </Button>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </section>
