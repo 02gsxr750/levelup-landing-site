@@ -240,7 +240,6 @@ function CTASection() {
             data-testid="button-sponsor-cta"
             onClick={() => window.location.href = '/sponsors'}
           >
-            <Trophy className="w-5 h-5 mr-2" />
             View Sponsor Plans
           </Button>
         </div>
