@@ -8,7 +8,7 @@ import {
   ArrowRight,
   MessageCircle
 } from "lucide-react";
-import { SiApple, SiAndroid, SiDiscord } from "react-icons/si";
+import { SiApple, SiAndroid } from "react-icons/si";
 import { useState } from "react";
 import logoImage from "@assets/Latest Level Up Logo_1765078481170.png";
 import screenshot1 from "@assets/IMG_5341_1765075302448.png";
@@ -237,28 +237,13 @@ function CTASection() {
   return (
     <section id="contact" className="mb-16 py-12 rounded-2xl border border-green-400/30 bg-gradient-to-r from-green-400/10 to-transparent p-8">
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-4">Join the Community</h2>
+        <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
         <p className="text-lg text-muted-foreground mb-6">
-          Beta testers: Join our Discord community to connect with other early adopters, get instant support, and shape the future of Level Up.
+          Have questions or feedback? We'd love to hear from you.
         </p>
-        
-        <div className="flex justify-center mb-6">
-          <Button
-            className="rounded-full px-8 py-3 font-semibold text-base text-white border-0"
-            style={{
-              background: "#5865F2",
-              boxShadow: "0 0 30px rgba(88, 101, 242, 0.6)"
-            }}
-            data-testid="button-discord-cta"
-            onClick={() => window.open('https://discord.gg/YZZj83QT', '_blank')}
-          >
-            <SiDiscord className="w-5 h-5 mr-2" />
-            Join Discord
-          </Button>
-        </div>
 
         <p className="text-sm text-muted-foreground">
-          Questions? Email{" "}
+          Email us at{" "}
           <a href="mailto:support@joinlevelupapp.com" className="text-green-400 hover:underline">
             support@joinlevelupapp.com
           </a>
