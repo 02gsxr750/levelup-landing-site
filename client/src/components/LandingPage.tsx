@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { 
   Zap, 
-  ExternalLink,
   Gamepad2,
   Users,
   Trophy,
@@ -93,25 +92,10 @@ function HeroSection() {
               <SiAndroid className="w-5 h-5 mr-2" />
               Google Play
             </Button>
-            <Button 
-              className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
-              style={{
-                background: "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)",
-                boxShadow: "0 0 30px rgba(255, 215, 0, 0.6), 0 20px 60px rgba(255, 215, 0, 0.3)"
-              }}
-              data-testid="button-app-preview"
-              onClick={() => window.open('https://levelup-app-flax.vercel.app', '_blank')}
-            >
-              <ExternalLink className="w-4 h-4 mr-2" />
-              App Preview
-            </Button>
-          </div>
+            </div>
 
           <p className="text-xs text-muted-foreground mt-4">
-            Available on iOS and Android, or try the app preview.
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Already have the app? Use App Preview to return to Level Up.
+            Available now on iOS and Android.
           </p>
         </div>
       </div>
