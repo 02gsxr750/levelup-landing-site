@@ -227,7 +227,7 @@ function CTASection() {
       <div className="max-w-2xl mx-auto text-center">
         <h2 className="text-3xl font-bold mb-4">Become a Sponsor</h2>
         <p className="text-lg text-muted-foreground mb-6">
-          Run branded challenges with real coin prize pools. Reach engaged users and grow your brand on Level Up.
+          Run branded challenges with coin prize pools. Reach engaged users and grow your brand on Level Up.
         </p>
         
         <div className="flex justify-center mb-6">
