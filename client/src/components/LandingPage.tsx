@@ -22,11 +22,7 @@ function Header() {
     window.location.href = "/about";
   };
 
-  const goToSponsors = () => {
-    window.location.href = "/sponsors";
-  };
-  
-  return (
+return (
     <header className="flex items-center justify-end gap-2 flex-wrap mb-12">
       <nav className="flex items-center gap-2 flex-wrap">
         <Button
@@ -35,14 +31,6 @@ function Header() {
           onClick={goToAbout}
         >
           About
-        </Button>
-        <Button
-          variant="outline"
-          data-testid="nav-link-sponsors"
-          onClick={goToSponsors}
-          className="rounded-full"
-        >
-          Become a Sponsor
         </Button>
       </nav>
     </header>
@@ -235,16 +223,31 @@ function FeaturesSection() {
 
 function CTASection() {
   return (
-    <section id="contact" className="mb-16 py-12 rounded-2xl border border-green-400/30 bg-gradient-to-r from-green-400/10 to-transparent p-8">
+    <section id="sponsors" className="mb-16 py-12 rounded-2xl border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-transparent p-8">
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
+        <h2 className="text-3xl font-bold mb-4">Become a Sponsor</h2>
         <p className="text-lg text-muted-foreground mb-6">
-          Have questions or feedback? We'd love to hear from you.
+          Run branded challenges with real coin prize pools. Reach engaged users and grow your brand on Level Up.
         </p>
+        
+        <div className="flex justify-center mb-6">
+          <Button
+            className="rounded-full px-8 py-3 font-semibold text-base text-black border-0"
+            style={{
+              background: "linear-gradient(135deg, #a855f7 0%, #6366f1 100%)",
+              boxShadow: "0 0 30px rgba(168, 85, 247, 0.6)"
+            }}
+            data-testid="button-sponsor-cta"
+            onClick={() => window.location.href = '/sponsors'}
+          >
+            <Trophy className="w-5 h-5 mr-2" />
+            View Sponsor Plans
+          </Button>
+        </div>
 
         <p className="text-sm text-muted-foreground">
-          Email us at{" "}
-          <a href="mailto:support@joinlevelupapp.com" className="text-green-400 hover:underline">
+          Questions? Email{" "}
+          <a href="mailto:support@joinlevelupapp.com" className="text-purple-400 hover:underline">
             support@joinlevelupapp.com
           </a>
         </p>
