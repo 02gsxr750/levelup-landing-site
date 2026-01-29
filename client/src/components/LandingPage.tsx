@@ -87,11 +87,11 @@ function HeroSection() {
                 background: "linear-gradient(135deg, #ffffff 0%, #e5e5ea 100%)",
                 boxShadow: "0 0 30px rgba(229, 229, 234, 0.6), 0 20px 60px rgba(229, 229, 234, 0.3)"
               }}
-              data-testid="button-ios-testflight"
-              onClick={() => window.open('https://testflight.apple.com/join/MDjEaMVg', '_blank')}
+              data-testid="button-ios-appstore"
+              onClick={() => window.open('https://apps.apple.com/us/app/level-up-challenges/id6754522127', '_blank', 'noopener,noreferrer')}
             >
               <SiApple className="w-5 h-5 mr-2" />
-              iOS TestFlight
+              App Store
             </Button>
             <Button 
               className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
@@ -99,11 +99,11 @@ function HeroSection() {
                 background: "#22c55e",
                 boxShadow: "0 0 30px rgba(34, 197, 94, 0.6), 0 20px 60px rgba(34, 197, 94, 0.3)"
               }}
-              data-testid="button-android-build"
-              onClick={() => window.open('https://expo.dev/accounts/burn424/projects/levelup-app/builds/326713ea-2f60-4a2e-b2d6-40b3c29ad84c', '_blank')}
+              data-testid="button-google-play"
+              onClick={() => window.open('https://play.google.com/store/apps/details?id=com.marshellventures.levelup', '_blank', 'noopener,noreferrer')}
             >
               <SiAndroid className="w-5 h-5 mr-2" />
-              Android APK
+              Google Play
             </Button>
             <Button 
               className="rounded-full px-6 py-3 font-semibold text-base text-black border-0"
@@ -120,7 +120,7 @@ function HeroSection() {
           </div>
 
           <p className="text-xs text-muted-foreground mt-4">
-            Download for iOS, Android, or try the app preview.
+            Available on iOS and Android, or try the app preview.
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             Already have the app? Use App Preview to return to Level Up.

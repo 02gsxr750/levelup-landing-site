@@ -1,0 +1,54 @@
+You are working in the joinlevelupapp.com web repo. We are LIVE on both app stores now, so we no longer want the “iOS TestFlight” and “Android APK” buttons/links anywhere on the landing page.
+
+GOAL
+Replace those two buttons so they keep the same styling/position/layout, but now link to the live app store pages.
+
+LIVE STORE LINKS
+- iOS App Store: https://apps.apple.com/us/app/level-up-challenges/id6754522127
+- Google Play: https://play.google.com/store/apps/details?id=com.marshellventures.levelup
+
+REQUIREMENTS (DO NOT BREAK UI)
+1) Keep the same button styling, sizing, icons, colors, spacing, and layout. Only change:
+   - button text (optional) and
+   - the href / onClick destination.
+2) Replace “iOS TestFlight” button:
+   - New label: “Download on the App Store” (or “App Store” if space is tight)
+   - Link: https://apps.apple.com/us/app/level-up-challenges/id6754522127
+3) Replace “Android APK” button:
+   - New label: “Get it on Google Play” (or “Google Play” if space is tight)
+   - Link: https://play.google.com/store/apps/details?id=com.marshellventures.levelup
+4) Both buttons MUST open the store links in a new tab/window:
+   - If using <a>: add target="_blank" and rel="noopener noreferrer"
+   - If using a button handler: use window.open(url, "_blank", "noopener,noreferrer")
+5) Remove any APK download references or TestFlight references:
+   - No “testflight.apple.com” links
+   - No “.apk” download links
+   - No copy that suggests beta / test builds
+6) Leave the “App Preview” button exactly as-is.
+
+STEP 1 — INSPECT (MANDATORY)
+Search the repo to find where these buttons are rendered and what they currently link to:
+- Find occurrences of the strings:
+  "iOS TestFlight"
+  "Android APK"
+  "testflight"
+  ".apk"
+- List the exact file paths and line numbers where they are found.
+- Confirm what component/page is used for the landing hero section that shows these buttons on mobile.
+Do not change anything yet—just report findings first.
+
+STEP 2 — IMPLEMENT
+After inspection, make the minimal code change(s) to swap the destinations and labels as described above while preserving styling.
+- If the buttons are components, update props.
+- If the buttons are hardcoded, update the href/onClick.
+- Ensure the icons remain (Apple icon stays with iOS button; Android icon stays with Android button).
+
+STEP 3 — VERIFY
+- Confirm both links work and open in a new tab.
+- Confirm no TestFlight/APK references remain in the landing page UI.
+- Provide the diff/patch of the files changed.
+
+OUTPUT
+1) Inspection report (files + line numbers)
+2) Diffs
+3) Short verification checklist results
