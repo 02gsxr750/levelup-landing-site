@@ -32,7 +32,7 @@ const tiers = [
       "Sponsored badge on challenge cards",
       "Small banner on challenge detail page",
       "Basic stats (views, entries, winner)",
-      "Coin prize pool escrow & automatic payout",
+      "Coin prize pool escrow & automatic distribution",
     ],
   },
   {
@@ -901,7 +901,7 @@ export default function SponsorsPage() {
           <p className="text-sm text-muted-foreground">
             <strong className="text-foreground">Note:</strong> All tiers require Influencer membership ($9.99/mo) as a prerequisite. 
             Sponsored challenge coins are held in escrow until the challenge ends, then distributed to the winner. 
-            Coins have no cash value, cannot be redeemed for cash, and are not transferable. Sponsor subscriptions are purchased and managed on the web.
+            Coins have no cash value, cannot be redeemed for cash, and are not transferable. Certain earned coins may be used in the Rewards Store for eligible rewards, subject to review, approval, and availability. Sponsor subscriptions are purchased and managed on the web.
           </p>
         </section>
 

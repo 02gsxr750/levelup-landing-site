@@ -130,7 +130,7 @@ export default function PrivacyPage() {
               Level Up offers virtual coins that may be earned through participation or purchased through Apple's in-app purchase system. Coins are virtual items used solely within the Level Up platform for features such as challenges, boosts, and cosmetic enhancements.
             </p>
             <p className="text-muted-foreground mt-2">
-              Coins have no cash value, cannot be redeemed for cash, and are not transferable. Certain earned coins may be used in the Rewards Store for eligible rewards, subject to review, approval, fraud checks, and availability. Purchased, bonus, or promotional coins are not redeemable unless explicitly stated. Rewards are based on participation, competition, and performance on the platform, not random chance.
+              Coins have no cash value, cannot be redeemed for cash, and are not transferable. Certain earned coins may be used in the Rewards Store for eligible rewards, subject to review, approval, and availability.
             </p>
 
             <p className="text-muted-foreground mt-4 font-semibold">We do not sell personal information.</p>

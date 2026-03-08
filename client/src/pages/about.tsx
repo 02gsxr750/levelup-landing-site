@@ -128,11 +128,11 @@ export default function AboutPage() {
               Coin Economy
             </h3>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-              Level Up uses an in-app coin system to reward challenge creators, active players, and battle winners. Coins are used for battles, boosts, cosmetics, and other in-app features. Coins have no cash value, cannot be redeemed for cash, and are not transferable.
+              Level Up uses an in-app coin system to reward challenge creators, active players, and battle winners. Coins are used for battles, boosts, cosmetics, and other in-app features.
             </p>
             <div className="space-y-2 text-sm text-muted-foreground mb-4">
               <p><strong className="text-foreground">Start with 1,000 coins</strong> when you join</p>
-              <p><strong className="text-foreground">Purchase pricing:</strong> 1,000 coins = $1.99</p>
+              <p><strong className="text-foreground">Coins are virtual currency</strong> used for battles, boosts, and features</p>
               <p><strong className="text-foreground">Battle Creation Fee:</strong> 100 coins 🔥</p>
               <p><strong className="text-foreground">Battle Stakes:</strong> Minimum 100 coins required</p>
               <p><strong className="text-foreground">Platform Fee:</strong> 7.5% from every battle (5% burned, 2.5% creator treasury)</p>
@@ -141,14 +141,41 @@ export default function AboutPage() {
               <p><strong className="text-foreground">Creator Rewards:</strong> Earn coins when people engage with your challenges</p>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-4">
-              <p className="text-xs font-semibold text-green-400 mb-2">💰 Coin Packs Available:</p>
-              <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                <div>Starter Pack: 1,000 coins ($1.99)</div>
-                <div>Challenger Pack: 5,000 coins ($7.99)</div>
-                <div>Pro Pack: 12,000 coins ($14.99)</div>
-                <div>Legendary Pack: 25,000 coins ($29.99)</div>
+              <p className="text-xs font-semibold text-green-400 mb-2">📦 Coin Packs Available:</p>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div>Starter Pack: 1,000 coins</div>
+                <div>Challenger Pack: 5,000 coins</div>
+                <div>Pro Pack: 12,000 coins</div>
+                <div>Legendary Pack: 25,000 coins</div>
               </div>
+              <p className="text-xs text-muted-foreground mt-2 italic">
+                Coin packs are available as in-app purchases. Pricing is shown in the native purchase sheet and varies by region.
+              </p>
             </div>
+            <p className="text-xs text-muted-foreground italic">
+              Coins are virtual in-app points used within the platform. Coins have no cash value, cannot be redeemed for cash, and are not transferable. Certain earned coins may be used in the Rewards Store for eligible rewards, subject to review, approval, and availability.
+            </p>
+          </Card>
+
+          <Card className="p-4 border-border mb-6">
+            <h3 className="text-base font-semibold text-green-400 mb-3 flex items-center gap-2">
+              <Star className="w-5 h-5" />
+              Rewards & Redemption
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+              Level Up is a performance-based challenge platform. Rewards are tied to participation, competition, and community voting — not random chance. The harder you compete, the more you earn.
+            </p>
+            <ul className="space-y-2 text-sm text-muted-foreground mb-4">
+              <li className="flex gap-2"><span className="text-green-400">•</span> <span><strong>Earn through performance:</strong> Coins are earned by creating challenges, winning battles, receiving votes, and engaging with the community</span></li>
+              <li className="flex gap-2"><span className="text-green-400">•</span> <span><strong>Earned coins only:</strong> Only eligible earned coins may be used for redemption. Purchased, bonus, or promotional coins are not redeemable unless explicitly stated</span></li>
+              <li className="flex gap-2"><span className="text-green-400">•</span> <span><strong>Rewards available:</strong> Gift cards, merchandise, and other items may be offered in the Rewards Store as availability allows</span></li>
+              <li className="flex gap-2"><span className="text-green-400">•</span> <span><strong>Subject to review:</strong> All redemptions are reviewed, approved, and subject to fraud checks before fulfillment</span></li>
+              <li className="flex gap-2"><span className="text-green-400">•</span> <span><strong>Right to deny:</strong> Level Up may delay, deny, or cancel redemption requests if rules are violated, suspicious activity is detected, or an item becomes unavailable</span></li>
+              <li className="flex gap-2"><span className="text-green-400">•</span> <span><strong>Not cash:</strong> Rewards are not cash, are not bank balances, and are not guaranteed until approved and fulfilled</span></li>
+            </ul>
+            <p className="text-xs text-muted-foreground italic">
+              Reward availability, catalog items, and coin costs may change at any time. Level Up reserves the right to modify or discontinue the Rewards Store without prior notice.
+            </p>
           </Card>
 
           <Card className="p-4 border-border mb-6">
@@ -158,7 +185,7 @@ export default function AboutPage() {
             </h3>
             <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
               Challenge creators earn coins when their content generates engagement. All rewards
-              paid from the creator treasury (2.5% of battle fees).
+              are paid from the creator treasury (2.5% of battle fees).
             </p>
             <ul className="space-y-2 text-sm text-muted-foreground mb-4">
               <li className="flex gap-2"><span className="text-pink-400">•</span> <span><strong>Challenge Created:</strong> +25 coins (Influencers: +50)</span></li>
@@ -186,7 +213,7 @@ export default function AboutPage() {
               <p className="text-xs text-muted-foreground">Examples: 5 votes = 50 pts | 3 votes + 20 views = 50 pts | 50 views = 50 pts</p>
             </div>
             <ul className="space-y-2 text-xs text-muted-foreground">
-              <li className="flex gap-2"><span className="text-yellow-400">•</span> <span><strong>Minimum Pool:</strong> At least 10 eligible challenges must exist before any payouts</span></li>
+              <li className="flex gap-2"><span className="text-yellow-400">•</span> <span><strong>Minimum Pool:</strong> At least 10 eligible challenges must exist before any distributions</span></li>
               <li className="flex gap-2"><span className="text-yellow-400">•</span> <span><strong>No Boosted Challenges:</strong> Challenges with active boosts or visual effects are excluded</span></li>
               <li className="flex gap-2"><span className="text-yellow-400">•</span> <span><strong>Organic Votes Only:</strong> Your own votes on your challenge don't count toward trending score</span></li>
               <li className="flex gap-2"><span className="text-yellow-400">•</span> <span><strong>Minimum Score:</strong> Must earn 50+ trending points to qualify (about 5 organic votes)</span></li>
@@ -343,7 +370,7 @@ export default function AboutPage() {
                   <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" /> <span>Sponsored badge on challenge cards</span></li>
                   <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" /> <span>Small banner on challenge detail page</span></li>
                   <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" /> <span>Basic stats (views, entries, winner)</span></li>
-                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" /> <span>Coin prize pool escrow & automatic payout</span></li>
+                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" /> <span>Coin prize pool escrow & automatic distribution</span></li>
                 </ul>
               </div>
 

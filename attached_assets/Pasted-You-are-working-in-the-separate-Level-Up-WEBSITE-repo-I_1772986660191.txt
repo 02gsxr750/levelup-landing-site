@@ -1,0 +1,167 @@
+You are working in the separate Level Up WEBSITE repo. IMPLEMENT ONLY: sync the website’s coins, rewards, redemption, and legal language to match the mobile app WORD-FOR-WORD.
+
+Critical rule:
+- The mobile app wording below is the source of truth.
+- Do NOT paraphrase, shorten, modernize, or improve the wording.
+- Copy it exactly as written, word-for-word, wherever the equivalent website sections exist.
+
+Constraints:
+- Do NOT change backend logic, API behavior, routes, or database code
+- Do NOT change layouts or styling except for tiny spacing adjustments needed to fit the copied text
+- No console.log
+- This is a content synchronization pass only
+
+Tasks:
+
+1) Search the website repo for all user-facing pages/components that contain any of the following concepts:
+- About
+- Terms
+- Privacy / Legal / Policies
+- Coin Shop
+- Rewards Store
+- Redemption
+- Sponsor language mentioning coin prize pools / payout / distribution
+- Any coin disclaimer text
+- Any helper text on rewards / checkout / history pages
+
+2) Replace the website wording with the following exact source-of-truth copy from the mobile app.
+
+==================================================
+SOURCE-OF-TRUTH COPY — USE EXACTLY AS WRITTEN
+==================================================
+
+ABOUT PAGE
+
+Coin Economy
+Heading:
+Coin Economy
+
+Intro:
+Level Up uses an in-app coin system to reward challenge creators, active players, and battle winners. Coins are used for battles, boosts, cosmetics, and other in-app features.
+
+Bullets:
+- Start with 1,000 coins when you join
+- Coins are virtual currency used for battles, boosts, and features
+- Battle Creation Fee: 100 coins 🔥
+- Battle Stakes: Minimum 100 coins required
+- Platform Fee: 7.5% from every battle (5% burned, 2.5% creator treasury)
+- Winner Gets: 92.5% of the total pot (both stakes combined)
+- Daily Free Earning Cap: 250 coins/day from creator rewards & votes
+- Creator Rewards: Earn coins when people engage with your challenges
+
+Coin Packs box:
+- 📦 Coin Packs Available:
+- Starter Pack: 1,000 coins
+- Challenger Pack: 5,000 coins
+- Pro Pack: 12,000 coins
+- Legendary Pack: 25,000 coins
+- Coin packs are available as in-app purchases. Pricing is shown in the native purchase sheet and varies by region.
+
+Disclaimer:
+Coins are virtual in-app points used within the platform. Coins have no cash value, cannot be redeemed for cash, and are not transferable. Certain earned coins may be used in the Rewards Store for eligible rewards, subject to review, approval, and availability.
+
+Rewards & Redemption
+Heading:
+Rewards & Redemption
+
+Intro:
+Level Up is a performance-based challenge platform. Rewards are tied to participation, competition, and community voting — not random chance. The harder you compete, the more you earn.
+
+Bullets:
+- Earn through performance: Coins are earned by creating challenges, winning battles, receiving votes, and engaging with the community
+- Earned coins only: Only eligible earned coins may be used for redemption. Purchased, bonus, or promotional coins are not redeemable unless explicitly stated
+- Rewards available: Gift cards, merchandise, and other items may be offered in the Rewards Store as availability allows
+- Subject to review: All redemptions are reviewed, approved, and subject to fraud checks before fulfillment
+- Right to deny: Level Up may delay, deny, or cancel redemption requests if rules are violated, suspicious activity is detected, or an item becomes unavailable
+- Not cash: Rewards are not cash, are not bank balances, and are not guaranteed until approved and fulfilled
+
+Footer disclaimer:
+Reward availability, catalog items, and coin costs may change at any time. Level Up reserves the right to modify or discontinue the Rewards Store without prior notice.
+
+TERMS OF SERVICE
+
+Section 4: Virtual Currency & Rewards
+
+Paragraph 1:
+Coins and XP (Experience Points) are virtual platform items with no independent cash value. Coins cannot be exchanged for cash, are not transferable between users, and do not represent a stored monetary balance.
+
+Paragraph 2:
+Certain coins earned through platform activity — such as creating challenges, winning battles, receiving votes, and other engagement — may be eligible for redemption through the Rewards Store for available rewards including gift cards, merchandise, or other items. Purchased, bonus, or promotional coins are not eligible for redemption unless explicitly stated by Level Up.
+
+Paragraph 3:
+All redemption requests are subject to review, approval, fraud and abuse checks, and reward availability. Rewards are not guaranteed until a redemption has been approved and fulfilled. Level Up may delay, deny, or cancel any redemption request at its sole discretion if these Terms are violated, suspicious activity is detected, or a reward becomes unavailable.
+
+Paragraph 4:
+Level Up reserves the right to modify, suspend, limit, or terminate the virtual currency system, the Rewards Store, reward availability, coin costs, and redemption eligibility at any time without prior notice.
+
+Paragraph 5:
+You have no ownership, property right, or vested interest in any coins, XP, or accrued redemption eligibility. Unredeemed balances may be forfeited upon account suspension, termination, or closure, or as a result of fraud, abuse, chargebacks, or violations of these Terms. Rewards are promotional platform benefits and do not constitute wages, compensation, or financial obligations.
+
+Paragraph 6:
+You are solely responsible for any tax obligations arising from rewards you receive. Level Up does not provide tax advice and makes no representations regarding the tax treatment of redeemed rewards.
+
+COIN SHOP
+
+Disclaimer:
+Coins have no cash value, cannot be redeemed for cash, and are not transferable. Certain earned coins may be used in the Rewards Store for eligible rewards, subject to review, approval, and availability.
+
+REWARDS STORE / CHECKOUT
+
+Store Page
+Subtitle:
+Redeem earned coins for gift cards and Level Up swag.
+
+Balance label:
+Earned Coins
+
+Earned-only notice:
+Earned coins only. Purchases/bonuses are not redeemable.
+
+Affordability shortfall:
+Short {X} earned coins.
+
+Footer exchange rate:
+Earned coins only. 2,000 coins = $1 reward value.
+
+Checkout Page
+Shortfall warning:
+You need {X} more earned coins.
+
+Pre-submit warning:
+This will use your earned coins and cannot be undone.
+
+Email helper text:
+Using your account email by default. You can change it if needed.
+
+History Page
+Empty state:
+Browse the Rewards Store to redeem your earned coins.
+
+==================================================
+END SOURCE-OF-TRUTH COPY
+==================================================
+
+3) Also search for and fix any conflicting website phrases so they match the mobile app’s meaning. Replace or remove outdated/conflicting phrases such as:
+- real-world monetary value
+- paid out
+- payout
+- real coin prize pools
+- cash out
+- winnings
+- 1 coin = $X
+- redeemed outside the platform
+- any wording that implies coins are cash-equivalent or directly paid out
+
+4) Keep tone appropriate by page:
+- About: explanatory and platform-facing
+- Terms: legal and protective
+- Coin Shop / Rewards / Checkout: concise and user-facing
+But again: use the source wording exactly where corresponding text exists.
+
+5) Do NOT create new product promises or legal claims beyond the provided text.
+
+Deliverable:
+- List every file changed
+- For each file, summarize exactly which section/text was updated
+- Confirm no backend logic changed
+- Confirm no new TypeScript/build errors
