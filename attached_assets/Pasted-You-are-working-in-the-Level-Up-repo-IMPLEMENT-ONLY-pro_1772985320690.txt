@@ -1,0 +1,62 @@
+You are working in the Level Up repo. IMPLEMENT ONLY: propagate the newly approved rewards language across the website so all user-facing copy is consistent with the current Rewards Store, About page, Terms of Service, and Coin Shop.
+
+Constraints:
+- Do NOT change any backend logic, database code, routes, API behavior, or reward math
+- Do NOT touch home/feed/ChallengeCard/vote routes unless only changing copy
+- No console.log
+- This is a COPY / CONTENT CONSISTENCY pass only
+
+Goal:
+Audit the website for any outdated coin/reward language and update it so it matches the new approved wording:
+- Coins have no cash value
+- Coins cannot be redeemed for cash
+- Coins are not transferable
+- Certain earned coins may be used in the Rewards Store for eligible rewards
+- Redemption is subject to review, approval, fraud checks, and availability
+- Purchased / bonus / promotional coins are not redeemable unless explicitly stated
+- Rewards are performance-based, not random chance
+
+Tasks:
+
+1) Search the web app for outdated or conflicting phrases, especially variants of:
+- "coins have no real-world monetary value"
+- "cannot be redeemed"
+- "cannot be redeemed for cash"
+- "coins are virtual"
+- "rewards"
+- "redemption"
+- "earned coins"
+- "gift cards"
+- "Rewards Store"
+
+2) Review all user-facing copy in these likely areas:
+- About page
+- Coin Shop page
+- Rewards Store page
+- Rewards checkout page
+- Rewards history page
+- Profile CTA / Rewards Store CTA
+- Legal / Terms / Policies hub
+- Any landing page / marketing copy / FAQ / help text / tooltips / helper text referencing coins or rewards
+
+3) Update copy where needed so messaging is consistent with the approved policy:
+Core language standard:
+- Coins have no cash value, cannot be redeemed for cash, and are not transferable.
+- Certain earned coins may be used in the Rewards Store for eligible rewards, subject to review, approval, fraud checks, and availability.
+- Purchased, bonus, or promotional coins are not redeemable unless explicitly stated.
+- Rewards are based on participation, competition, and performance on the platform, not random chance.
+
+4) Keep tone appropriate by location:
+- About page: explanatory, platform-facing
+- Terms: legal / protective
+- Coin Shop / Rewards Store / CTA text: concise, user-facing
+- Marketing pages: exciting but accurate
+Do NOT bloat pages with legal language where a short version is better.
+
+5) Do NOT rewrite sections that are already aligned unless needed for consistency.
+6) Preserve all existing layouts and styling unless a tiny text-spacing adjustment is needed.
+
+Deliverable:
+- Provide a summary of every file changed
+- For each file, include the before/after wording or a concise description of what was updated
+- Confirm no backend logic changed and no new TypeScript errors

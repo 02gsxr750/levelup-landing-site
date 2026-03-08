@@ -749,7 +749,7 @@ export default function SponsorsPage() {
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Run sponsored challenges with platform coin prize pools. Sponsors can create branded 
-            challenges where coins are escrowed and automatically paid out to the winner when the challenge ends.
+            challenges where coins are escrowed and automatically distributed to the winner when the challenge ends.
           </p>
         </section>
 
@@ -901,7 +901,7 @@ export default function SponsorsPage() {
           <p className="text-sm text-muted-foreground">
             <strong className="text-foreground">Note:</strong> All tiers require Influencer membership ($9.99/mo) as a prerequisite. 
             Sponsored challenge coins are held in escrow until the challenge ends, then distributed to the winner. 
-            Coins have no cash value. Sponsor subscriptions are purchased and managed on the web.
+            Coins have no cash value, cannot be redeemed for cash, and are not transferable. Sponsor subscriptions are purchased and managed on the web.
           </p>
         </section>
 

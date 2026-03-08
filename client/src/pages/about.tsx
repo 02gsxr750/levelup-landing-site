@@ -128,11 +128,11 @@ export default function AboutPage() {
               Coin Economy
             </h3>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-              Level Up uses an in-app coin system to reward challenge creators, active players, and battle winners. Coins are used for battles, boosts, cosmetics, and other in-app features.
+              Level Up uses an in-app coin system to reward challenge creators, active players, and battle winners. Coins are used for battles, boosts, cosmetics, and other in-app features. Coins have no cash value, cannot be redeemed for cash, and are not transferable.
             </p>
             <div className="space-y-2 text-sm text-muted-foreground mb-4">
               <p><strong className="text-foreground">Start with 1,000 coins</strong> when you join</p>
-              <p><strong className="text-foreground">1 coin = $0.002</strong> (1,000 coins = $1.99)</p>
+              <p><strong className="text-foreground">Purchase pricing:</strong> 1,000 coins = $1.99</p>
               <p><strong className="text-foreground">Battle Creation Fee:</strong> 100 coins 🔥</p>
               <p><strong className="text-foreground">Battle Stakes:</strong> Minimum 100 coins required</p>
               <p><strong className="text-foreground">Platform Fee:</strong> 7.5% from every battle (5% burned, 2.5% creator treasury)</p>
@@ -320,8 +320,8 @@ export default function AboutPage() {
               🏢 Sponsor Program
             </h3>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-              Run sponsored challenges with real coin prize pools. Sponsors can create branded
-              challenges where coins are escrowed and automatically paid out to the winner when
+              Run sponsored challenges with coin prize pools. Sponsors can create branded
+              challenges where coins are escrowed and automatically distributed to the winner when
               the challenge ends.
             </p>
 
@@ -373,7 +373,7 @@ export default function AboutPage() {
             </div>
 
             <p className="text-xs text-muted-foreground italic mt-4">
-              Note: All tiers require Influencer membership ($9.99/mo) as a prerequisite. Sponsored challenge coins are held in escrow until the challenge ends, then distributed to the winner.
+              Note: All tiers require Influencer membership ($9.99/mo) as a prerequisite. Sponsored challenge coins are held in escrow until the challenge ends, then distributed to the winner. Coins have no cash value and are not transferable.
             </p>
           </Card>
 

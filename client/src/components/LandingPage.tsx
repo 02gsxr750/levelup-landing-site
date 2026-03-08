@@ -179,7 +179,7 @@ function FeaturesSection() {
     },
     {
       title: "Sponsor Challenges",
-      description: "Brands can run sponsored challenges with real coin prize pools."
+      description: "Brands can run sponsored challenges with coin prize pools."
     }
   ];
 
