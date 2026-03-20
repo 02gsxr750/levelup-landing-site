@@ -3,8 +3,10 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/challenge/:id", "destination": "/api/challenge-og?id=:id" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/challenge-og-image", "destination": "/api/challenge-og-image" },
+    { "source": "/api/challenge-og",       "destination": "/api/challenge-og" },
+    { "source": "/api/(.*)",               "destination": "/api/$1" },
+    { "source": "/challenge/:id",          "destination": "/api/challenge-og?id=:id" },
+    { "source": "/(.*)",                   "destination": "/index.html" }
   ]
 }
