@@ -4,6 +4,7 @@
   "outputDirectory": "dist/public",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/challenge/:id", "destination": "/api/challenge-og?id=:id" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
