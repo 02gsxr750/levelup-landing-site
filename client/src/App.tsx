@@ -9,6 +9,7 @@ import PrivacyPage from "@/pages/privacy";
 import DeleteAccountPage from "@/pages/delete-account";
 import SponsorsPage from "@/pages/sponsors";
 import SponsorsSuccessPage from "@/pages/sponsors-success";
+import ChallengePage from "@/pages/challenge";
 import NotFound from "@/pages/not-found";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path="/delete-account" component={DeleteAccountPage} />
             <Route path="/sponsors" component={SponsorsPage} />
             <Route path="/sponsors/success" component={SponsorsSuccessPage} />
+            <Route path="/challenge/:id" component={ChallengePage} />
             <Route path="/" component={LandingPage} />
             <Route component={NotFound} />
           </Switch>
