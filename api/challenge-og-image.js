@@ -206,7 +206,8 @@ export default async function handler(req, res) {
   if (!UUID_REGEX.test(id)) {
     console.log("[proxy] invalid uuid → fallback");
     res.setHeader("Location", FALLBACK_REDIRECT);
-    res.setHeader("Cache-Control", "public, max-age=86400");
+    // Never cache error/fallback responses — CDN must not serve stale fallbacks
+    res.setHeader("Cache-Control", "no-store");
     return res.status(302).send("");
   }
 
@@ -215,7 +216,7 @@ export default async function handler(req, res) {
   if (!storagePath) {
     console.log("[proxy] no storage path → fallback");
     res.setHeader("Location", FALLBACK_REDIRECT);
-    res.setHeader("Cache-Control", "public, max-age=3600");
+    res.setHeader("Cache-Control", "no-store");
     return res.status(302).send("");
   }
 
@@ -230,7 +231,8 @@ export default async function handler(req, res) {
     console.log("[proxy]   SUPABASE_SERVICE_ROLE_KEY = <service-role key for that project>");
     console.log("[proxy] ─────────────────────────────────────────────────────────");
     res.setHeader("Location", FALLBACK_REDIRECT);
-    res.setHeader("Cache-Control", "public, max-age=300");
+    // Do not cache failures — next request must retry the proxy
+    res.setHeader("Cache-Control", "no-store");
     return res.status(302).send("");
   }
 
