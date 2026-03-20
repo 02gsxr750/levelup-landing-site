@@ -1,0 +1,65 @@
+Implement the production fix for challenge sharing on Vercel.
+
+We now know the exact production blockers:
+1. Express-based OG injection works in local dev but does NOT run in Vercel production, because Vercel serves static index.html
+2. Domain canonical is backwards: joinlevelupapp.com currently redirects to www.joinlevelupapp.com
+3. og:image fails because the Supabase Storage object is not publicly reachable by crawlers
+
+Goals:
+Build the proper production-safe Vercel solution for challenge share pages.
+
+Requirements:
+
+1. Create a Vercel serverless function or production-safe route for:
+   /challenge/:id
+
+2. That route must:
+   - fetch the challenge from Supabase using server env vars
+   - generate HTML server-side with dynamic OG/Twitter meta tags
+   - include:
+     - title
+     - description
+     - og:title
+     - og:description
+     - og:image
+     - og:url
+     - og:type
+     - twitter:card
+     - twitter:title
+     - twitter:description
+     - twitter:image
+     - canonical link
+   - return the final HTML directly so crawlers see it without client JS
+
+3. Update vercel.json routing so production requests for:
+   /challenge/:id
+   are handled by this serverless route instead of static index.html.
+
+4. Fix canonical domain behavior:
+   - www.joinlevelupapp.com should redirect permanently to joinlevelupapp.com
+   - all canonical URLs and og:url values should use:
+     https://joinlevelupapp.com/challenge/<id>
+
+5. Fix og:image delivery:
+   - inspect the current thumb_url storage path
+   - make the final image URL publicly reachable by crawlers
+   - do not use an auth-gated or expiring URL for social previews
+   - if the bucket is private, implement the safest production solution:
+     either public object access for preview images or a public image proxy endpoint
+
+6. Preserve the current bridge landing page behavior for human users.
+   The page should still act like a lightweight challenge landing page, not the web app.
+
+7. Add temporary production logging for:
+   - route hit
+   - challenge id
+   - challenge found / not found
+   - final og:image URL
+   - hostname handling
+
+8. At the end, report:
+   - exact files changed
+   - final Vercel route behavior
+   - final canonical redirect behavior
+   - final og:image strategy
+   - whether any Supabase storage policy or bucket visibility change is still required
