@@ -13,51 +13,109 @@ function escapeHtmlAttr(str: string): string {
     .replace(/>/g, "&gt;");
 }
 
-async function fetchChallengeForMeta(id: string): Promise<{
+type ChallengeMetaResult = {
   title: string;
   description: string;
   image: string;
   creator: string | null;
-}> {
+  _debug?: string;
+};
+
+async function fetchChallengeForMeta(id: string): Promise<ChallengeMetaResult> {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
   const FALLBACK_IMAGE = "https://joinlevelupapp.com/og-image.png";
 
-  const defaults = {
+  const defaults: ChallengeMetaResult = {
     title: "Level Up Challenge",
     description: "Join this challenge on Level Up. Compete, vote, and earn coins & XP.",
     image: FALLBACK_IMAGE,
     creator: null,
   };
 
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return defaults;
+  console.log(`[challenge-meta] fetching id="${id}"`);
+  console.log(`[challenge-meta] SUPABASE_URL=${SUPABASE_URL ? `set (${SUPABASE_URL.substring(0, 30)}...)` : "MISSING"}`);
+  console.log(`[challenge-meta] SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY ? `set (length=${SUPABASE_ANON_KEY.length})` : "MISSING"}`);
+
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    console.warn("[challenge-meta] WARN: Supabase env vars not configured — serving fallback metadata");
+    return { ...defaults, _debug: "env_vars_missing" };
+  }
+
+  const url = `${SUPABASE_URL}/rest/v1/challenges?id=eq.${encodeURIComponent(id)}&select=*&limit=1`;
+  console.log(`[challenge-meta] querying: ${url}`);
 
   try {
-    const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/challenges?id=eq.${encodeURIComponent(id)}&select=id,title,description,thumbnail_url,video_thumbnail_url,creator_name,username&limit=1`,
-      {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(url, {
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-    if (!response.ok) return defaults;
+    console.log(`[challenge-meta] Supabase HTTP status: ${response.status}`);
+
+    if (response.status === 401 || response.status === 403) {
+      const body = await response.text();
+      console.error(`[challenge-meta] AUTH ERROR ${response.status}: ${body}`);
+      console.error("[challenge-meta] HINT: SUPABASE_ANON_KEY may not match the project at SUPABASE_URL, or RLS is blocking anon access");
+      return { ...defaults, _debug: `auth_error_${response.status}` };
+    }
+
+    if (response.status === 400) {
+      const body = await response.text();
+      console.error(`[challenge-meta] QUERY ERROR 400: ${body}`);
+      console.error("[challenge-meta] HINT: A selected column may not exist on the challenges table");
+      return { ...defaults, _debug: "query_error_400" };
+    }
+
+    if (!response.ok) {
+      const body = await response.text();
+      console.error(`[challenge-meta] UNEXPECTED ERROR ${response.status}: ${body}`);
+      return { ...defaults, _debug: `http_error_${response.status}` };
+    }
 
     const data = await response.json();
-    if (!Array.isArray(data) || data.length === 0) return defaults;
+    console.log(`[challenge-meta] rows returned: ${Array.isArray(data) ? data.length : "not an array"}`);
+
+    if (!Array.isArray(data) || data.length === 0) {
+      console.log(`[challenge-meta] challenge id="${id}" not found in database`);
+      return { ...defaults, _debug: "not_found" };
+    }
 
     const c = data[0];
-    return {
+    console.log(`[challenge-meta] found challenge. Available keys: ${Object.keys(c).join(", ")}`);
+
+    // Pick thumbnail: try common column names defensively
+    const image =
+      c.thumbnail_url ||
+      c.video_thumbnail_url ||
+      c.cover_url ||
+      c.image_url ||
+      c.media_url ||
+      FALLBACK_IMAGE;
+
+    // Pick creator: try common column names defensively
+    const creator =
+      c.creator_name ||
+      c.username ||
+      c.display_name ||
+      c.author ||
+      null;
+
+    const result: ChallengeMetaResult = {
       title: c.title ? `${c.title} · Level Up` : defaults.title,
-      description: c.description || defaults.description,
-      image: c.thumbnail_url || c.video_thumbnail_url || FALLBACK_IMAGE,
-      creator: c.creator_name || c.username || null,
+      description: c.description || c.caption || defaults.description,
+      image,
+      creator,
     };
-  } catch {
-    return defaults;
+
+    console.log(`[challenge-meta] resolved → title="${result.title}" image="${result.image}"`);
+    return result;
+  } catch (err: any) {
+    console.error(`[challenge-meta] NETWORK/PARSE ERROR: ${err?.message ?? err}`);
+    return { ...defaults, _debug: "fetch_exception" };
   }
 }
 

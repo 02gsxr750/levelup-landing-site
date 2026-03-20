@@ -1,0 +1,55 @@
+We already built the /challenge/:id server-side metadata route and the challenge bridge page, but the page is falling back to "not found" because the server cannot fetch the challenge from Supabase.
+
+Inspect and fix the server-side challenge fetch end-to-end.
+
+Context:
+- Work ONLY in the website project
+- The route already exists in server/routes.ts
+- The challenge landing page already exists
+- The likely failure is env config, query mismatch, or RLS
+- Do not change the mobile app project in this pass
+
+Goals:
+1. Inspect the server-side GET /challenge/:id route and report:
+   - exact Supabase client initialization used on the server
+   - whether it reads SUPABASE_URL and SUPABASE_ANON_KEY from process.env
+   - whether those env vars are missing, malformed, or unused
+   - exact table/query being used to fetch challenge data
+   - whether the queried columns actually exist
+   - whether the route is querying the challenge by the correct id field
+   - all current failure paths that trigger the fallback/not-found behavior
+
+2. Add temporary debug logging to confirm:
+   - challenge id received from req.params.id
+   - SUPABASE_URL exists or not
+   - SUPABASE_ANON_KEY exists or not
+   - whether Supabase returns data, null, or an error
+   - the exact error message if any
+
+3. Verify the fetch query against the real schema.
+   The route should fetch the challenge record by challenge id from the correct table and return:
+   - title
+   - description
+   - thumbnail_url if available
+   - video_thumbnail_url if available
+   - creator_name / username only if those joins/fields truly exist
+   - otherwise fail gracefully without breaking the page
+
+4. If the query is selecting non-existent columns, fix it safely.
+   Prefer a minimal correct query over a broad broken query.
+
+5. Add defensive behavior:
+   - if env vars are missing, log a clear server warning
+   - if Supabase returns an auth/RLS error, log it clearly
+   - if challenge not found, distinguish "not found" from "query failed"
+
+6. Do not remove the dynamic metadata system.
+7. Do not change the URL structure.
+8. Keep the bridge page intact.
+
+Deliverables:
+- inspection summary
+- exact root cause
+- exact files changed
+- final required env vars list
+- any Supabase SQL/RLS changes needed, if any
