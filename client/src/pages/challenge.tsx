@@ -108,8 +108,12 @@ export default function ChallengePage() {
           <>
             <div className="w-full mb-6">
               {previewImage ? (
-                <div className="relative w-full rounded-2xl overflow-hidden bg-black/40"
-                  style={{ aspectRatio: "16/9" }}
+                /* padding-bottom 56.25% = 9/16 — guarantees the box height matches the
+                   16:9 ratio regardless of image natural dimensions or browser quirks.
+                   height:0 + paddingBottom is the gold-standard responsive-ratio trick. */
+                <div
+                  className="relative w-full rounded-2xl overflow-hidden bg-black/40"
+                  style={{ height: 0, paddingBottom: "56.25%" }}
                 >
                   <img
                     src={previewImage}
@@ -127,17 +131,20 @@ export default function ChallengePage() {
                 </div>
               ) : (
                 <div
-                  className="relative w-full rounded-2xl flex items-center justify-center border border-white/10"
+                  className="relative w-full rounded-2xl overflow-hidden border border-white/10"
                   style={{
-                    aspectRatio: "16/9",
+                    height: 0,
+                    paddingBottom: "56.25%",
                     background: "linear-gradient(135deg, #1a0a2e 0%, #0d0518 60%, #1a0a2e 100%)",
                   }}
                 >
-                  <img
-                    src={logoImage}
-                    alt="Level Up"
-                    className="w-24 h-24 object-contain opacity-60"
-                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <img
+                      src={logoImage}
+                      alt="Level Up"
+                      className="w-24 h-24 object-contain opacity-60"
+                    />
+                  </div>
                 </div>
               )}
             </div>
