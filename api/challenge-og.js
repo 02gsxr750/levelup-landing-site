@@ -226,7 +226,7 @@ function buildHtml({ id, title, description, proxyImageUrl, found }) {
 </html>`;
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   const id = (req.query.id || "").trim();
   const host = req.headers["x-forwarded-host"] || req.headers.host || "";
 

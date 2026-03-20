@@ -56,7 +56,7 @@ async function fetchStorageImage(storagePath) {
   }
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   const id = (req.query.id || "").trim();
   console.log(`[challenge-og-image] request — id="${id}"`);
 
