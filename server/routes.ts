@@ -45,14 +45,20 @@ async function fetchChallengeForMeta(id: string): Promise<ChallengeMetaResult> {
   const url = `${SUPABASE_URL}/rest/v1/challenges?id=eq.${encodeURIComponent(id)}&select=*&limit=1`;
   console.log(`[challenge-meta] querying: ${url}`);
 
+  // Detect new publishable key format (sb_publishable_*) vs legacy JWT (eyJ*)
+  const isNewKeyFormat = SUPABASE_ANON_KEY.startsWith("sb_publishable_") || SUPABASE_ANON_KEY.startsWith("sb_secret_");
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    "Content-Type": "application/json",
+  };
+  if (!isNewKeyFormat) {
+    // Legacy JWT keys also need the apikey header
+    headers["apikey"] = SUPABASE_ANON_KEY;
+  }
+  console.log(`[challenge-meta] using ${isNewKeyFormat ? "new publishable" : "legacy JWT"} key format`);
+
   try {
-    const response = await fetch(url, {
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(url, { headers });
 
     console.log(`[challenge-meta] Supabase HTTP status: ${response.status}`);
 
