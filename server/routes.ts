@@ -101,26 +101,28 @@ async function fetchChallengeForMeta(id: string): Promise<ChallengeMetaResult> {
     const c = data[0];
     console.log(`[challenge-meta] found challenge. Available keys: ${Object.keys(c).join(", ")}`);
 
-    // Pick thumbnail: try common column names defensively
-    const image =
-      c.thumbnail_url ||
-      c.video_thumbnail_url ||
-      c.cover_url ||
-      c.image_url ||
-      c.media_url ||
-      FALLBACK_IMAGE;
+    // Resolve a Supabase Storage relative path to a full public URL
+    function resolveStorageUrl(raw: string | null | undefined): string | null {
+      if (!raw) return null;
+      if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
+      // Relative storage path — prepend the Supabase Storage public URL base
+      return `${SUPABASE_URL}/storage/v1/object/public/${raw}`;
+    }
 
-    // Pick creator: try common column names defensively
-    const creator =
-      c.creator_name ||
-      c.username ||
-      c.display_name ||
-      c.author ||
+    // Pick best thumbnail using actual column names from the schema
+    const rawImage =
+      c.thumb_url ||
+      c.sponsor_banner_thumb_url ||
+      c.sponsor_intro_thumb_url ||
+      c.media_url ||
       null;
+    const image = resolveStorageUrl(rawImage) || FALLBACK_IMAGE;
+
+    const creator: string | null = null; // creator_id is a UUID ref; no name column on challenges table
 
     const result: ChallengeMetaResult = {
       title: c.title ? `${c.title} · Level Up` : defaults.title,
-      description: c.description || c.caption || defaults.description,
+      description: c.description || defaults.description,
       image,
       creator,
     };
