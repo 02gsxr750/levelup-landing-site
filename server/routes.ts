@@ -21,7 +21,7 @@ type ChallengeMetaResult = {
   _debug?: string;
 };
 
-async function fetchChallengeForMeta(id: string): Promise<ChallengeMetaResult> {
+async function fetchChallengeForMeta(id: string, siteUrl: string): Promise<ChallengeMetaResult> {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   // Prefer CHALLENGES_SUPABASE_KEY (dedicated key) over the general SUPABASE_ANON_KEY
   const SUPABASE_ANON_KEY = process.env.CHALLENGES_SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
@@ -101,22 +101,13 @@ async function fetchChallengeForMeta(id: string): Promise<ChallengeMetaResult> {
     const c = data[0];
     console.log(`[challenge-meta] found challenge. Available keys: ${Object.keys(c).join(", ")}`);
 
-    // Resolve a Supabase Storage relative path to a full public URL
-    function resolveStorageUrl(raw: string | null | undefined): string | null {
-      if (!raw) return null;
-      if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
-      // Relative storage path — prepend the Supabase Storage public URL base
-      return `${SUPABASE_URL}/storage/v1/object/public/${raw}`;
-    }
-
-    // Pick best thumbnail using actual column names from the schema
-    const rawImage =
-      c.thumb_url ||
-      c.sponsor_banner_thumb_url ||
-      c.sponsor_intro_thumb_url ||
-      c.media_url ||
-      null;
-    const image = resolveStorageUrl(rawImage) || FALLBACK_IMAGE;
+    // Challenge images live in the mobile app's Supabase Storage project (separate from the
+    // web DB project). All image resolution goes through the server-side proxy which reads
+    // SUPABASE_STORAGE_URL / SUPABASE_STORAGE_KEY and never touches the website auth project.
+    const hasImage = !!(c.thumb_url || c.media_url);
+    const image = hasImage
+      ? `${siteUrl}/api/challenge-og-image?id=${encodeURIComponent(id)}`
+      : FALLBACK_IMAGE;
 
     const creator: string | null = null; // creator_id is a UUID ref; no name column on challenges table
 
@@ -250,7 +241,7 @@ export async function registerRoutes(
     const canonicalUrl = `https://joinlevelupapp.com/challenge/${id}`;
 
     try {
-      const meta = await fetchChallengeForMeta(id);
+      const meta = await fetchChallengeForMeta(id, SITE_URL);
 
       let templatePath: string;
       if (process.env.NODE_ENV === "production") {

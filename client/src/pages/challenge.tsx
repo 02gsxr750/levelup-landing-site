@@ -64,28 +64,13 @@ export default function ChallengePage() {
 
   const VIDEO_EXTS = /\.(mp4|mov|webm|m4v|avi|mkv)(\?|$)/i;
 
-  // Resolve a Supabase Storage relative path ("bucket/object/path") to a full public URL.
-  // thumb_url and media_url store relative paths — must use the supabase client to build the URL.
-  function getStorageUrl(rawPath: string | undefined): string | null {
-    if (!rawPath || !supabase) return null;
-    if (rawPath.startsWith("http://") || rawPath.startsWith("https://")) return rawPath;
-    // Format: "challenges/uuid/thumb/file.webp" — first segment is the bucket name
-    const slashIdx = rawPath.indexOf("/");
-    if (slashIdx === -1) return null;
-    const bucket = rawPath.slice(0, slashIdx);
-    const objectPath = rawPath.slice(slashIdx + 1);
-    const { data } = supabase.storage.from(bucket).getPublicUrl(objectPath);
-    return data?.publicUrl || null;
-  }
-
   const title = challenge?.title ?? "Level Up Challenge";
   const description = challenge?.description ?? "Join this challenge on Level Up. Compete, vote, and earn coins & XP.";
-  // Priority: thumb_url (WebP static) → media_url → null (shows branded placeholder)
-  const previewImage =
-    getStorageUrl(challenge?.thumb_url) ??
-    getStorageUrl(challenge?.media_url) ??
-    null;
-  // Show play button only when the raw source is a video file (not a WebP thumbnail)
+  // Image is served through the server-side proxy which handles storage resolution
+  // using SUPABASE_STORAGE_URL/SUPABASE_STORAGE_KEY (separate from the website's auth project).
+  // The proxy applies priority internally: thumb_url → media_url → branded fallback.
+  const previewImage = challenge && id ? `/api/challenge-og-image?id=${id}` : null;
+  // Play button only when no static thumbnail exists and the raw media file is a video
   const isVideo = VIDEO_EXTS.test(challenge?.media_url ?? "") && !challenge?.thumb_url;
 
   return (
