@@ -23,7 +23,8 @@ type ChallengeMetaResult = {
 
 async function fetchChallengeForMeta(id: string): Promise<ChallengeMetaResult> {
   const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+  // Prefer CHALLENGES_SUPABASE_KEY (dedicated key) over the general SUPABASE_ANON_KEY
+  const SUPABASE_ANON_KEY = process.env.CHALLENGES_SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
   const FALLBACK_IMAGE = "https://joinlevelupapp.com/og-image.png";
 
   const defaults: ChallengeMetaResult = {
@@ -40,6 +41,13 @@ async function fetchChallengeForMeta(id: string): Promise<ChallengeMetaResult> {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
     console.warn("[challenge-meta] WARN: Supabase env vars not configured — serving fallback metadata");
     return { ...defaults, _debug: "env_vars_missing" };
+  }
+
+  // Validate UUID format before querying to avoid 400 errors
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!UUID_REGEX.test(id)) {
+    console.log(`[challenge-meta] id="${id}" is not a valid UUID — skipping DB query`);
+    return { ...defaults, _debug: "invalid_uuid" };
   }
 
   const url = `${SUPABASE_URL}/rest/v1/challenges?id=eq.${encodeURIComponent(id)}&select=*&limit=1`;
