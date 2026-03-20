@@ -232,15 +232,6 @@ export default async function handler(req, res) {
 
   console.log(`[challenge-og] hit — id="${id}" host="${host}"`);
 
-  // www → apex permanent redirect
-  if (host.startsWith("www.")) {
-    const target = `${APEX}/challenge/${id}`;
-    console.log(`[challenge-og] www redirect → ${target}`);
-    res.setHeader("Location", target);
-    res.status(301).send("");
-    return;
-  }
-
   // Defaults
   let title = "Level Up Challenge";
   let description = "Join this challenge on Level Up. Compete, vote, and earn coins & XP.";
