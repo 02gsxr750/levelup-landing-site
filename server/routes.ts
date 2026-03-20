@@ -177,20 +177,27 @@ export async function registerRoutes(
 
   // Challenge image proxy — serves private Supabase Storage images publicly
   // Mirrors api/challenge-og-image.js (Vercel) for local dev parity
+  //
+  // CORRECT storage layout (confirmed via Supabase query):
+  //   thumb_url field → object path inside bucket "thumbs"
+  //   media_url field → object path inside bucket "media"
+  //   "challenges" is a directory prefix inside those buckets, NOT a bucket name.
   app.get("/api/challenge-og-image", async (req, res) => {
     const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     const FALLBACK = "https://joinlevelupapp.com/og-image.png";
+    const DEBUG_ID = "0b925a18-c7c2-4aa8-8691-a8acc1dc1be7";
     const id = ((req.query.id as string) || "").trim();
 
-    if (!UUID_RE.test(id)) {
-      return res.redirect(302, FALLBACK);
-    }
+    if (!UUID_RE.test(id)) return res.redirect(302, FALLBACK);
 
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SUPABASE_KEY = process.env.CHALLENGES_SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
     if (!SUPABASE_URL || !SUPABASE_KEY) return res.redirect(302, FALLBACK);
 
-    let storagePath: string | null = null;
+    // Determine bucket + objectPath from DB row
+    let bucket: string | null = null;
+    let objectPath: string | null = null;
+    let source: string = "none";
     try {
       const dbRes = await fetch(
         `${SUPABASE_URL}/rest/v1/challenges?id=eq.${encodeURIComponent(id)}&select=thumb_url,media_url&limit=1`,
@@ -199,42 +206,54 @@ export async function registerRoutes(
       if (dbRes.ok) {
         const rows = await dbRes.json();
         if (Array.isArray(rows) && rows.length > 0) {
-          storagePath = rows[0].thumb_url || rows[0].media_url || null;
-          console.log(`[img-proxy] selected="${storagePath}" (${rows[0].thumb_url ? "thumb_url" : "media_url"})`);
+          const row = rows[0];
+          if (row.thumb_url) {
+            source     = "thumb_url";
+            bucket     = "thumbs";
+            objectPath = row.thumb_url;      // full object path as stored
+          } else if (row.media_url) {
+            source     = "media_url";
+            bucket     = "media";
+            objectPath = row.media_url;      // full object path as stored
+          }
+          if (id === DEBUG_ID) {
+            console.log(`[img-proxy] DEBUG source="${source}" bucket="${bucket}" objectPath="${objectPath}"`);
+          } else {
+            console.log(`[img-proxy] selected source="${source}" bucket="${bucket}" objectPath="${objectPath}"`);
+          }
         }
       }
     } catch { /* fall through to fallback */ }
 
-    if (!storagePath) return res.redirect(302, FALLBACK);
+    if (!bucket || !objectPath) return res.redirect(302, FALLBACK);
 
-    // SUPABASE_SERVICE_ROLE_KEY is the canonical name; SUPABASE_SERVICE_KEY is the legacy alias
     const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || "";
     const ANON_KEY    = process.env.SUPABASE_STORAGE_KEY || SUPABASE_KEY;
     const STORE_URL   = process.env.SUPABASE_STORAGE_URL || SUPABASE_URL;
-    const isFullUrl   = storagePath.startsWith("http");
 
-    // Correct Supabase Storage endpoints:
-    //   public bucket:   /storage/v1/object/public/{bucket}/{objectPath}
-    //   private bucket:  /storage/v1/object/authenticated/{bucket}/{objectPath} (needs auth header)
-    // storagePath = "{bucket}/{objectPath}" — maps directly onto both URL forms
-    const candidates = [
-      SERVICE_KEY && { label: "service-role+authenticated",
-        url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/authenticated/${storagePath}`,
-        headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } },
-      { label: "public",
-        url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/public/${storagePath}`,
-        headers: {} },
-      ANON_KEY && { label: "anon+authenticated",
-        url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/authenticated/${storagePath}`,
-        headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } },
-    ].filter(Boolean) as { label: string; url: string; headers: Record<string, string> }[];
+    // Canonical Supabase Storage endpoints using correct bucket name
+    const publicUrl        = `${STORE_URL}/storage/v1/object/public/${bucket}/${objectPath}`;
+    const authenticatedUrl = `${STORE_URL}/storage/v1/object/authenticated/${bucket}/${objectPath}`;
+
+    const candidates: { label: string; url: string; headers: Record<string, string> }[] = [];
+    if (SERVICE_KEY) candidates.push({
+      label: "service-role + authenticated",
+      url: authenticatedUrl,
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+    });
+    candidates.push({ label: "public", url: publicUrl, headers: {} });
+    if (ANON_KEY) candidates.push({
+      label: "anon + authenticated",
+      url: authenticatedUrl,
+      headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
+    });
 
     for (const { label, url, headers } of candidates) {
       try {
         const imgRes = await fetch(url, { headers });
         const ct = imgRes.headers.get("content-type") || "";
         if (imgRes.ok && ct.startsWith("image/")) {
-          console.log(`[img-proxy] ✓ ${label} → ${ct}`);
+          console.log(`[img-proxy] ✓ ${label} → ${ct} (${bucket}/${objectPath})`);
           const buf = Buffer.from(await imgRes.arrayBuffer());
           res.setHeader("Content-Type", ct);
           res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
@@ -247,6 +266,7 @@ export async function registerRoutes(
       }
     }
 
+    console.log(`[img-proxy] all attempts failed for bucket="${bucket}" objectPath="${objectPath}" → fallback`);
     return res.redirect(302, FALLBACK);
   });
 

@@ -1,7 +1,11 @@
 /**
  * TEMPORARY DIAGNOSTIC ENDPOINT — remove after debugging
  * GET /api/storage-debug?id={uuid}
- * Returns JSON showing exactly which env vars are present and what each storage URL attempt returns.
+ * Returns JSON showing which env vars are present and what each storage URL attempt returns.
+ *
+ * Correct storage layout:
+ *   thumb_url field → object path inside bucket "thumbs"
+ *   media_url field → object path inside bucket "media"
  */
 export default async function handler(req, res) {
   const id = (req.query.id || "").trim();
@@ -9,9 +13,9 @@ export default async function handler(req, res) {
   const out = {
     id,
     env: {
-      SUPABASE_URL:               process.env.SUPABASE_URL ? process.env.SUPABASE_URL.slice(0, 50) : null,
+      SUPABASE_URL:               process.env.SUPABASE_URL ? process.env.SUPABASE_URL.slice(0, 60) : null,
       CHALLENGES_SUPABASE_KEY:    process.env.CHALLENGES_SUPABASE_KEY ? "set" : null,
-      SUPABASE_STORAGE_URL:       process.env.SUPABASE_STORAGE_URL ? process.env.SUPABASE_STORAGE_URL.slice(0, 50) : null,
+      SUPABASE_STORAGE_URL:       process.env.SUPABASE_STORAGE_URL ? process.env.SUPABASE_STORAGE_URL.slice(0, 60) : null,
       SUPABASE_STORAGE_KEY:       process.env.SUPABASE_STORAGE_KEY ? "set" : null,
       SUPABASE_SERVICE_ROLE_KEY:  process.env.SUPABASE_SERVICE_ROLE_KEY ? "set" : null,
       SUPABASE_SERVICE_KEY:       process.env.SUPABASE_SERVICE_KEY ? "set" : null,
@@ -19,14 +23,15 @@ export default async function handler(req, res) {
     },
     dbFetch: null,
     row: null,
-    storagePath: null,
-    pathParse: null,
+    bucket: null,
+    objectPath: null,
+    source: null,
     storageAttempts: [],
   };
 
-  // DB fetch
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_KEY = process.env.CHALLENGES_SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
+
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     out.dbFetch = "skipped — missing SUPABASE_URL or CHALLENGES_SUPABASE_KEY";
   } else {
@@ -38,9 +43,21 @@ export default async function handler(req, res) {
       const data = await dbRes.json();
       out.dbFetch = `HTTP ${dbRes.status}`;
       if (Array.isArray(data) && data.length > 0) {
-        out.row = { thumb_url: data[0].thumb_url, media_url: data[0].media_url };
-        out.storagePath = data[0].thumb_url || data[0].media_url || null;
-        out.selectedSource = data[0].thumb_url ? "thumb_url" : data[0].media_url ? "media_url" : "none";
+        const row = data[0];
+        out.row = { thumb_url: row.thumb_url, media_url: row.media_url };
+
+        // Correct bucket mapping:
+        //   thumb_url → bucket "thumbs", objectPath = full thumb_url value
+        //   media_url → bucket "media",  objectPath = full media_url value
+        if (row.thumb_url) {
+          out.source     = "thumb_url";
+          out.bucket     = "thumbs";
+          out.objectPath = row.thumb_url;
+        } else if (row.media_url) {
+          out.source     = "media_url";
+          out.bucket     = "media";
+          out.objectPath = row.media_url;
+        }
       } else {
         out.dbFetch += " — no row returned";
       }
@@ -49,34 +66,21 @@ export default async function handler(req, res) {
     }
   }
 
-  if (out.storagePath) {
-    const sp = out.storagePath;
-    const si = sp.indexOf("/");
-    out.pathParse = {
-      raw: sp,
-      bucket: si !== -1 ? sp.slice(0, si) : sp,
-      objectPath: si !== -1 ? sp.slice(si + 1) : "",
-    };
-
+  if (out.bucket && out.objectPath) {
     const DB_URL      = SUPABASE_URL || "";
     const STORE_URL   = process.env.SUPABASE_STORAGE_URL || DB_URL;
     const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || "";
     const ANON_KEY    = process.env.SUPABASE_STORAGE_KEY || SUPABASE_KEY || "";
 
+    const publicUrl        = `${STORE_URL}/storage/v1/object/public/${out.bucket}/${out.objectPath}`;
+    const authenticatedUrl = `${STORE_URL}/storage/v1/object/authenticated/${out.bucket}/${out.objectPath}`;
+
     const candidates = [
-      SERVICE_KEY && { label: "service-role+authenticated (STORE_URL)",
-        url: `${STORE_URL}/storage/v1/object/authenticated/${sp}`,
+      SERVICE_KEY && { label: "service-role + authenticated", url: authenticatedUrl,
         headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } },
-      { label: "public (STORE_URL)",
-        url: `${STORE_URL}/storage/v1/object/public/${sp}`, headers: {} },
-      ANON_KEY && { label: "anon+authenticated (STORE_URL)",
-        url: `${STORE_URL}/storage/v1/object/authenticated/${sp}`,
+      { label: "public", url: publicUrl, headers: {} },
+      ANON_KEY && { label: "anon + authenticated", url: authenticatedUrl,
         headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } },
-      STORE_URL !== DB_URL && { label: "service-role+authenticated (DB_URL)",
-        url: `${DB_URL}/storage/v1/object/authenticated/${sp}`,
-        headers: SERVICE_KEY ? { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } : {} },
-      STORE_URL !== DB_URL && { label: "public (DB_URL)",
-        url: `${DB_URL}/storage/v1/object/public/${sp}`, headers: {} },
     ].filter(Boolean);
 
     for (const { label, url, headers } of candidates) {
