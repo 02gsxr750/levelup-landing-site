@@ -207,29 +207,44 @@ export async function registerRoutes(
 
     if (!storagePath) return res.redirect(302, FALLBACK);
 
-    const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || "";
+    // SUPABASE_SERVICE_ROLE_KEY is the canonical name; SUPABASE_SERVICE_KEY is the legacy alias
+    const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || "";
+    const ANON_KEY    = process.env.SUPABASE_STORAGE_KEY || SUPABASE_KEY;
     const STORE_URL   = process.env.SUPABASE_STORAGE_URL || SUPABASE_URL;
     const isFullUrl   = storagePath.startsWith("http");
 
+    // Correct Supabase Storage endpoints:
+    //   public bucket:   /storage/v1/object/public/{bucket}/{objectPath}
+    //   private bucket:  /storage/v1/object/authenticated/{bucket}/{objectPath} (needs auth header)
+    // storagePath = "{bucket}/{objectPath}" — maps directly onto both URL forms
     const candidates = [
-      SERVICE_KEY && { url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/${storagePath}`,
+      SERVICE_KEY && { label: "service-role+authenticated",
+        url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/authenticated/${storagePath}`,
         headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } },
-      { url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/public/${storagePath}`, headers: {} },
-      SUPABASE_KEY && { url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/${storagePath}`,
-        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
-    ].filter(Boolean) as { url: string; headers: Record<string, string> }[];
+      { label: "public",
+        url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/public/${storagePath}`,
+        headers: {} },
+      ANON_KEY && { label: "anon+authenticated",
+        url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/authenticated/${storagePath}`,
+        headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } },
+    ].filter(Boolean) as { label: string; url: string; headers: Record<string, string> }[];
 
-    for (const { url, headers } of candidates) {
+    for (const { label, url, headers } of candidates) {
       try {
         const imgRes = await fetch(url, { headers });
         const ct = imgRes.headers.get("content-type") || "";
         if (imgRes.ok && ct.startsWith("image/")) {
+          console.log(`[img-proxy] ✓ ${label} → ${ct}`);
           const buf = Buffer.from(await imgRes.arrayBuffer());
           res.setHeader("Content-Type", ct);
           res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
           return res.status(200).send(buf);
         }
-      } catch { /* try next */ }
+        const errBody = await imgRes.text().catch(() => "");
+        console.log(`[img-proxy] ✗ ${label} → HTTP ${imgRes.status} "${ct}" — ${errBody.slice(0, 120)}`);
+      } catch (e: any) {
+        console.log(`[img-proxy] ✗ ${label} → error: ${e?.message}`);
+      }
     }
 
     return res.redirect(302, FALLBACK);

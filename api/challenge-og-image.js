@@ -1,19 +1,27 @@
 /**
  * /api/challenge-og-image?id={uuid}
  *
- * Secure image proxy for challenge thumbnails.
+ * Secure server-side image proxy for challenge thumbnails.
  *
- * Storage layout: thumb_url / media_url in the DB store relative paths like
- *   "challenges/{creator_id}/thumb/{file}.webp"
- * The FIRST segment is the Supabase Storage bucket name, the rest is the object path.
+ * Storage path format stored in DB:
+ *   thumb_url / media_url = "challenges/{creator_id}/thumb/{file}.webp"
+ *   First segment = bucket name ("challenges")
+ *   Remainder     = object path within that bucket
  *
- * Priority for key selection (highest privilege first):
- *   SUPABASE_SERVICE_KEY  → service_role, can access any private bucket
- *   CHALLENGES_SUPABASE_KEY / SUPABASE_ANON_KEY → anon, only public buckets
+ * Supabase Storage download endpoints:
+ *   Public bucket:   GET /storage/v1/object/public/{bucket}/{objectPath}
+ *   Private bucket:  GET /storage/v1/object/authenticated/{bucket}/{objectPath}
+ *                    (requires Authorization: Bearer {key} + apikey header)
  *
- * If storage is on a different Supabase project than the database, set:
- *   SUPABASE_STORAGE_URL  → that project's URL (falls back to SUPABASE_URL)
- *   SUPABASE_STORAGE_KEY  → that project's anon/service key (falls back to above keys)
+ * Required env vars:
+ *   SUPABASE_URL              DB project URL — used for challenge row lookup
+ *   CHALLENGES_SUPABASE_KEY   DB project anon key
+ *
+ * Optional env vars (for image fetch from a different Supabase project):
+ *   SUPABASE_STORAGE_URL        Storage project URL (if different from DB project)
+ *   SUPABASE_SERVICE_ROLE_KEY   Service-role key — preferred; can access any private bucket
+ *   SUPABASE_SERVICE_KEY        Alias for SUPABASE_SERVICE_ROLE_KEY (legacy)
+ *   SUPABASE_STORAGE_KEY        Anon/service key for the storage project
  */
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -23,7 +31,7 @@ async function fetchChallengeThumb(id) {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_KEY = process.env.CHALLENGES_SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
   if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.log("[challenge-og-image] DB env vars missing — cannot fetch challenge");
+    console.log("[proxy] SUPABASE_URL or CHALLENGES_SUPABASE_KEY not set — cannot fetch row");
     return null;
   }
   try {
@@ -32,35 +40,53 @@ async function fetchChallengeThumb(id) {
       { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
     );
     if (!res.ok) {
-      console.log(`[challenge-og-image] DB query failed: ${res.status}`);
+      console.log(`[proxy] DB query failed: HTTP ${res.status} — ${(await res.text()).slice(0, 120)}`);
       return null;
     }
     const data = await res.json();
     if (!Array.isArray(data) || data.length === 0) {
-      console.log(`[challenge-og-image] challenge not found in DB`);
+      console.log("[proxy] challenge row not found in DB");
       return null;
     }
     const row = data[0];
-    const chosen = row.thumb_url || row.media_url || null;
-    console.log(`[challenge-og-image] DB row — thumb_url="${row.thumb_url}" media_url="${row.media_url}"`);
-    console.log(`[challenge-og-image] selected source="${chosen}" (${row.thumb_url ? "thumb_url" : row.media_url ? "media_url" : "none"})`);
+    const thumbUrl = row.thumb_url || null;
+    const mediaUrl = row.media_url || null;
+    const chosen = thumbUrl || mediaUrl;
+    const source = thumbUrl ? "thumb_url" : mediaUrl ? "media_url" : "none";
+
+    console.log(`[proxy] DB row  thumb_url="${thumbUrl}"`);
+    console.log(`[proxy] DB row  media_url="${mediaUrl}"`);
+    console.log(`[proxy] selected source="${source}" value="${chosen}"`);
+
+    if (chosen) {
+      const slashIdx = chosen.indexOf("/");
+      const bucket = slashIdx !== -1 ? chosen.slice(0, slashIdx) : chosen;
+      const objectPath = slashIdx !== -1 ? chosen.slice(slashIdx + 1) : "";
+      console.log(`[proxy] path parsed  bucket="${bucket}"  objectPath="${objectPath}"`);
+    }
     return chosen;
   } catch (e) {
-    console.error(`[challenge-og-image] DB fetch exception: ${e.message}`);
+    console.error(`[proxy] DB fetch exception: ${e.message}`);
     return null;
   }
 }
 
-async function tryFetch(url, headers) {
+async function tryFetch(label, url, headers) {
   try {
-    console.log(`[challenge-og-image] trying: ${url}`);
+    console.log(`[proxy] → trying [${label}]`);
+    console.log(`[proxy]   url: ${url}`);
     const res = await fetch(url, { headers });
     const ct = res.headers.get("content-type") || "";
-    console.log(`[challenge-og-image] → ${res.status} "${ct}"`);
-    if (res.ok && ct.startsWith("image/")) return res;
+    if (res.ok && ct.startsWith("image/")) {
+      console.log(`[proxy]   ✓ HTTP ${res.status} "${ct}" — success`);
+      return res;
+    }
+    let body = "";
+    try { body = (await res.text()).slice(0, 160); } catch {}
+    console.log(`[proxy]   ✗ HTTP ${res.status} "${ct}" — ${body}`);
     return null;
   } catch (e) {
-    console.log(`[challenge-og-image] → error: ${e.message}`);
+    console.log(`[proxy]   ✗ fetch error: ${e.message}`);
     return null;
   }
 }
@@ -69,55 +95,98 @@ async function fetchStorageImage(storagePath) {
   const DB_URL    = process.env.SUPABASE_URL || "";
   const STORE_URL = process.env.SUPABASE_STORAGE_URL || DB_URL;
 
-  // Key priority: service key (private buckets) → storage-specific key → anon key
-  const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || "";
-  const ANON_KEY    = process.env.SUPABASE_STORAGE_KEY ||
-                      process.env.CHALLENGES_SUPABASE_KEY ||
-                      process.env.SUPABASE_ANON_KEY || "";
+  // SUPABASE_SERVICE_ROLE_KEY is the canonical name; SUPABASE_SERVICE_KEY is the legacy alias
+  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ||
+                      process.env.SUPABASE_SERVICE_KEY || "";
+  // Anon/service key for the storage project (separate from DB project credentials)
+  const ANON_KEY = process.env.SUPABASE_STORAGE_KEY ||
+                   process.env.CHALLENGES_SUPABASE_KEY ||
+                   process.env.SUPABASE_ANON_KEY || "";
 
   const isFullUrl = storagePath.startsWith("http://") || storagePath.startsWith("https://");
 
-  const candidates = isFullUrl
-    ? [
-        { label: "direct+service", url: storagePath,
-          headers: SERVICE_KEY ? { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } : null },
-        { label: "direct+anon",   url: storagePath,
-          headers: ANON_KEY ? { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } : {} },
-        { label: "direct-no-auth", url: storagePath, headers: {} },
-      ]
-    : [
-        // Service role key — can access private buckets
-        SERVICE_KEY && { label: "service-auth on storage-url",
-          url: `${STORE_URL}/storage/v1/object/${storagePath}`,
-          headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } },
-        SERVICE_KEY && STORE_URL !== DB_URL && { label: "service-auth on db-url",
-          url: `${DB_URL}/storage/v1/object/${storagePath}`,
-          headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } },
+  // Path parsing (for log clarity only — storagePath is used directly in URLs below)
+  if (!isFullUrl) {
+    const slashIdx = storagePath.indexOf("/");
+    const bucket = storagePath.slice(0, slashIdx);
+    const objectPath = storagePath.slice(slashIdx + 1);
+    // Correct Supabase Storage URL layouts:
+    //   public:        {STORE_URL}/storage/v1/object/public/{bucket}/{objectPath}
+    //   authenticated: {STORE_URL}/storage/v1/object/authenticated/{bucket}/{objectPath}
+    // storagePath = "{bucket}/{objectPath}" so it maps directly onto both URL forms.
+    console.log(`[proxy] storage config  STORE_URL="${STORE_URL}"`);
+    console.log(`[proxy] storage config  SERVICE_KEY=${SERVICE_KEY ? "set" : "(not set)"}`);
+    console.log(`[proxy] storage config  ANON_KEY=${ANON_KEY ? "set" : "(not set)"}`);
+    console.log(`[proxy] effective urls:`);
+    console.log(`[proxy]   public        → ${STORE_URL}/storage/v1/object/public/${storagePath}`);
+    console.log(`[proxy]   authenticated → ${STORE_URL}/storage/v1/object/authenticated/${storagePath}`);
+  }
 
-        // Public URL (works when bucket is public)
-        { label: "public on storage-url",
-          url: `${STORE_URL}/storage/v1/object/public/${storagePath}`,
-          headers: {} },
-        STORE_URL !== DB_URL && { label: "public on db-url",
-          url: `${DB_URL}/storage/v1/object/public/${storagePath}`,
-          headers: {} },
+  const candidates = [];
 
-        // Anon auth (works when bucket has anon read policy)
-        ANON_KEY && { label: "anon-auth on storage-url",
-          url: `${STORE_URL}/storage/v1/object/${storagePath}`,
-          headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } },
-        ANON_KEY && STORE_URL !== DB_URL && { label: "anon-auth on db-url",
-          url: `${DB_URL}/storage/v1/object/${storagePath}`,
-          headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } },
-      ].filter(Boolean);
+  if (isFullUrl) {
+    if (SERVICE_KEY) candidates.push({
+      label: "full-url + service-role",
+      url: storagePath,
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+    });
+    if (ANON_KEY) candidates.push({
+      label: "full-url + anon",
+      url: storagePath,
+      headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
+    });
+    candidates.push({ label: "full-url + no-auth", url: storagePath, headers: {} });
+  } else {
+    // 1. Service-role key: /object/authenticated/ endpoint (private bucket access)
+    if (SERVICE_KEY) {
+      candidates.push({
+        label: "service-role + authenticated (STORE_URL)",
+        url: `${STORE_URL}/storage/v1/object/authenticated/${storagePath}`,
+        headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+      });
+      if (STORE_URL !== DB_URL) {
+        candidates.push({
+          label: "service-role + authenticated (DB_URL)",
+          url: `${DB_URL}/storage/v1/object/authenticated/${storagePath}`,
+          headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+        });
+      }
+    }
+
+    // 2. Public URL (works if bucket is set to public)
+    candidates.push({
+      label: "public (STORE_URL)",
+      url: `${STORE_URL}/storage/v1/object/public/${storagePath}`,
+      headers: {},
+    });
+    if (STORE_URL !== DB_URL) {
+      candidates.push({
+        label: "public (DB_URL)",
+        url: `${DB_URL}/storage/v1/object/public/${storagePath}`,
+        headers: {},
+      });
+    }
+
+    // 3. Anon key: /object/authenticated/ endpoint (works if bucket has anon read policy)
+    if (ANON_KEY) {
+      candidates.push({
+        label: "anon + authenticated (STORE_URL)",
+        url: `${STORE_URL}/storage/v1/object/authenticated/${storagePath}`,
+        headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
+      });
+      if (STORE_URL !== DB_URL) {
+        candidates.push({
+          label: "anon + authenticated (DB_URL)",
+          url: `${DB_URL}/storage/v1/object/authenticated/${storagePath}`,
+          headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
+        });
+      }
+    }
+  }
 
   for (const { label, url, headers } of candidates) {
-    if (!headers) continue; // key not set, skip
-    const res = await tryFetch(url, headers);
-    if (res) {
-      console.log(`[challenge-og-image] ✓ succeeded with: ${label}`);
-      return res;
-    }
+    const res = await tryFetch(label, url, headers);
+    if (res) return res;
   }
   return null;
 }
@@ -125,14 +194,17 @@ async function fetchStorageImage(storagePath) {
 export default async function handler(req, res) {
   const id = (req.query.id || "").trim();
 
-  console.log(`[challenge-og-image] ──── request id="${id}" ────`);
-  console.log(`[challenge-og-image] SUPABASE_URL="${process.env.SUPABASE_URL || "(not set)"}"`);
-  console.log(`[challenge-og-image] SUPABASE_STORAGE_URL="${process.env.SUPABASE_STORAGE_URL || "(using SUPABASE_URL)"}"`);
-  console.log(`[challenge-og-image] SUPABASE_SERVICE_KEY="${process.env.SUPABASE_SERVICE_KEY ? "set" : "(not set — private bucket access limited)"}"`);
-  console.log(`[challenge-og-image] CHALLENGES_SUPABASE_KEY="${process.env.CHALLENGES_SUPABASE_KEY ? "set" : "(not set)"}"`);
+  console.log(`[proxy] ════════════════════════════════`);
+  console.log(`[proxy] request id="${id}"`);
+  console.log(`[proxy] env SUPABASE_URL="${process.env.SUPABASE_URL ? process.env.SUPABASE_URL.slice(0, 50) : "(not set)"}"`);
+  console.log(`[proxy] env CHALLENGES_SUPABASE_KEY=${process.env.CHALLENGES_SUPABASE_KEY ? "set" : "(not set)"}`);
+  console.log(`[proxy] env SUPABASE_STORAGE_URL="${process.env.SUPABASE_STORAGE_URL || "(not set — falling back to SUPABASE_URL)"}"`);
+  console.log(`[proxy] env SUPABASE_STORAGE_KEY=${process.env.SUPABASE_STORAGE_KEY ? "set" : "(not set)"}`);
+  console.log(`[proxy] env SUPABASE_SERVICE_ROLE_KEY=${process.env.SUPABASE_SERVICE_ROLE_KEY ? "set ← preferred" : "(not set)"}`);
+  console.log(`[proxy] env SUPABASE_SERVICE_KEY=${process.env.SUPABASE_SERVICE_KEY ? "set ← alias" : "(not set)"}`);
 
   if (!UUID_REGEX.test(id)) {
-    console.log(`[challenge-og-image] invalid uuid → fallback`);
+    console.log("[proxy] invalid uuid → fallback");
     res.setHeader("Location", FALLBACK_REDIRECT);
     res.setHeader("Cache-Control", "public, max-age=86400");
     return res.status(302).send("");
@@ -141,7 +213,7 @@ export default async function handler(req, res) {
   const storagePath = await fetchChallengeThumb(id);
 
   if (!storagePath) {
-    console.log(`[challenge-og-image] no storage path → fallback`);
+    console.log("[proxy] no storage path → fallback");
     res.setHeader("Location", FALLBACK_REDIRECT);
     res.setHeader("Cache-Control", "public, max-age=3600");
     return res.status(302).send("");
@@ -150,8 +222,13 @@ export default async function handler(req, res) {
   const imageRes = await fetchStorageImage(storagePath);
 
   if (!imageRes) {
-    console.log(`[challenge-og-image] all storage attempts failed → fallback`);
-    console.log(`[challenge-og-image] ACTION REQUIRED: set SUPABASE_SERVICE_KEY (same project) or SUPABASE_STORAGE_URL (different project)`);
+    console.log("[proxy] all storage attempts failed → fallback");
+    console.log("[proxy] ── ACTION REQUIRED ──────────────────────────────────────");
+    console.log("[proxy] The 'challenges' bucket is not in the current SUPABASE_URL project.");
+    console.log("[proxy] Add to Vercel env vars:");
+    console.log("[proxy]   SUPABASE_STORAGE_URL = <mobile app Supabase project URL>");
+    console.log("[proxy]   SUPABASE_SERVICE_ROLE_KEY = <service-role key for that project>");
+    console.log("[proxy] ─────────────────────────────────────────────────────────");
     res.setHeader("Location", FALLBACK_REDIRECT);
     res.setHeader("Cache-Control", "public, max-age=300");
     return res.status(302).send("");
@@ -159,7 +236,7 @@ export default async function handler(req, res) {
 
   const contentType = imageRes.headers.get("content-type") || "image/jpeg";
   const buffer = Buffer.from(await imageRes.arrayBuffer());
-  console.log(`[challenge-og-image] ✓ serving ${buffer.length} bytes "${contentType}"`);
+  console.log(`[proxy] ✓ serving ${buffer.length} bytes "${contentType}"`);
 
   res.setHeader("Content-Type", contentType);
   res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800");
