@@ -184,6 +184,66 @@ export async function registerRoutes(
       : "http://localhost:5000"
   );
 
+  // Challenge image proxy — serves private Supabase Storage images publicly
+  // Mirrors api/challenge-og-image.js (Vercel) for local dev parity
+  app.get("/api/challenge-og-image", async (req, res) => {
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const FALLBACK = "https://joinlevelupapp.com/og-image.png";
+    const id = ((req.query.id as string) || "").trim();
+
+    if (!UUID_RE.test(id)) {
+      return res.redirect(302, FALLBACK);
+    }
+
+    const SUPABASE_URL = process.env.SUPABASE_URL;
+    const SUPABASE_KEY = process.env.CHALLENGES_SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
+    if (!SUPABASE_URL || !SUPABASE_KEY) return res.redirect(302, FALLBACK);
+
+    let storagePath: string | null = null;
+    try {
+      const dbRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/challenges?id=eq.${encodeURIComponent(id)}&select=thumb_url,media_url&limit=1`,
+        { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+      );
+      if (dbRes.ok) {
+        const rows = await dbRes.json();
+        if (Array.isArray(rows) && rows.length > 0) {
+          storagePath = rows[0].thumb_url || rows[0].media_url || null;
+          console.log(`[img-proxy] selected="${storagePath}" (${rows[0].thumb_url ? "thumb_url" : "media_url"})`);
+        }
+      }
+    } catch { /* fall through to fallback */ }
+
+    if (!storagePath) return res.redirect(302, FALLBACK);
+
+    const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || "";
+    const STORE_URL   = process.env.SUPABASE_STORAGE_URL || SUPABASE_URL;
+    const isFullUrl   = storagePath.startsWith("http");
+
+    const candidates = [
+      SERVICE_KEY && { url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/${storagePath}`,
+        headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } },
+      { url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/public/${storagePath}`, headers: {} },
+      SUPABASE_KEY && { url: isFullUrl ? storagePath : `${STORE_URL}/storage/v1/object/${storagePath}`,
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
+    ].filter(Boolean) as { url: string; headers: Record<string, string> }[];
+
+    for (const { url, headers } of candidates) {
+      try {
+        const imgRes = await fetch(url, { headers });
+        const ct = imgRes.headers.get("content-type") || "";
+        if (imgRes.ok && ct.startsWith("image/")) {
+          const buf = Buffer.from(await imgRes.arrayBuffer());
+          res.setHeader("Content-Type", ct);
+          res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
+          return res.status(200).send(buf);
+        }
+      } catch { /* try next */ }
+    }
+
+    return res.redirect(302, FALLBACK);
+  });
+
   // Challenge page — server-side OG meta injection for social crawlers
   app.get("/challenge/:id", async (req, res, next) => {
     const { id } = req.params;
