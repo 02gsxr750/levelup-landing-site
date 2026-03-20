@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { SiApple, SiAndroid } from "react-icons/si";
-import { ArrowLeft, Play, User } from "lucide-react";
+import { ArrowLeft, Play } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import logoImage from "@assets/Latest Level Up Logo_1765078481170.png";
 
@@ -10,10 +10,10 @@ type Challenge = {
   id: string;
   title?: string;
   description?: string;
-  thumbnail_url?: string;
-  video_thumbnail_url?: string;
-  creator_name?: string;
-  username?: string;
+  /** Static WebP thumbnail — first priority for preview image */
+  thumb_url?: string;
+  /** Original media file (may be JPEG/video) — fallback preview */
+  media_url?: string;
 };
 
 const APP_STORE_URL = "https://apps.apple.com/us/app/level-up-challenges/id6754522127";
@@ -43,7 +43,7 @@ export default function ChallengePage() {
       try {
         const { data, error } = await supabase
           .from("challenges")
-          .select("id, title, description, thumbnail_url, video_thumbnail_url, creator_name, username")
+          .select("id, title, description, thumb_url, media_url")
           .eq("id", id)
           .single();
 
@@ -62,10 +62,13 @@ export default function ChallengePage() {
     fetchChallenge();
   }, [id]);
 
+  const VIDEO_EXTS = /\.(mp4|mov|webm|m4v|avi|mkv)(\?|$)/i;
+
   const title = challenge?.title ?? "Level Up Challenge";
   const description = challenge?.description ?? "Join this challenge on Level Up. Compete, vote, and earn coins & XP.";
-  const creator = challenge?.creator_name ?? challenge?.username ?? null;
-  const previewImage = challenge?.thumbnail_url ?? challenge?.video_thumbnail_url ?? null;
+  // thumb_url is always a static image (WebP); media_url may be video or image
+  const previewImage = challenge?.thumb_url ?? challenge?.media_url ?? null;
+  const isVideo = previewImage ? VIDEO_EXTS.test(previewImage) : false;
 
   return (
     <div
@@ -111,11 +114,13 @@ export default function ChallengePage() {
                     className="w-full h-full object-cover"
                     data-testid="challenge-preview-image"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <div className="w-14 h-14 rounded-full bg-black/60 backdrop-blur flex items-center justify-center border border-white/20">
-                      <Play className="w-6 h-6 text-white ml-0.5" fill="white" />
+                  {isVideo && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <div className="w-14 h-14 rounded-full bg-black/60 backdrop-blur flex items-center justify-center border border-white/20">
+                        <Play className="w-6 h-6 text-white ml-0.5" fill="white" />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               ) : (
                 <div
@@ -151,15 +156,6 @@ export default function ChallengePage() {
                     {title}
                   </h1>
 
-                  {creator && (
-                    <div
-                      className="flex items-center justify-center gap-1.5 mb-3"
-                      data-testid="text-challenge-creator"
-                    >
-                      <User className="w-3.5 h-3.5 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">@{creator}</span>
-                    </div>
-                  )}
 
                   {description && (
                     <p

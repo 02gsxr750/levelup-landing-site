@@ -40,12 +40,20 @@ async function fetchChallenge(id) {
   }
 }
 
-function buildHtml({ id, title, description, proxyImageUrl, found }) {
+const VIDEO_EXTS = /\.(mp4|mov|webm|m4v|avi|mkv)(\?|$)/i;
+
+function isVideoPath(path) {
+  return path ? VIDEO_EXTS.test(path) : false;
+}
+
+function buildHtml({ id, title, description, proxyImageUrl, found, rawMediaPath }) {
   const t = esc(title);
   const d = esc(description);
   const u = `${APEX}/challenge/${id}`;
   const img = esc(proxyImageUrl);
   const hasImage = proxyImageUrl !== FALLBACK_IMAGE;
+  // Only show play button if the source media is actually a video file
+  const showPlayBtn = hasImage && isVideoPath(rawMediaPath);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -105,9 +113,10 @@ function buildHtml({ id, title, description, proxyImageUrl, found }) {
       margin-bottom:24px;
     }
     .media-placeholder img{width:96px;height:96px;object-fit:contain;opacity:.6}
+    /* Play overlay — only rendered when source is a video file */
     .play-btn{
       position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-      background:rgba(0,0,0,.2);
+      background:rgba(0,0,0,.2);pointer-events:none;
     }
     .play-circle{
       width:56px;height:56px;border-radius:50%;
@@ -167,11 +176,9 @@ function buildHtml({ id, title, description, proxyImageUrl, found }) {
     ${hasImage
       ? `<div class="media-wrap">
            <img src="${img}" alt="${t}" />
-           <div class="play-btn">
-             <div class="play-circle">
-               <svg class="play-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-             </div>
-           </div>
+           ${showPlayBtn
+             ? `<div class="play-btn"><div class="play-circle"><svg class="play-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>`
+             : ""}
          </div>`
       : `<div class="media-placeholder">
            <img src="${APEX}/favicon.png" alt="Level Up" />
@@ -236,6 +243,8 @@ export default async function handler(req, res) {
   let title = "Level Up Challenge";
   let description = "Join this challenge on Level Up. Compete, vote, and earn coins & XP.";
   let proxyImageUrl = FALLBACK_IMAGE;
+  // rawMediaPath = the actual DB path, used only to detect video vs image
+  let rawMediaPath = null;
   let found = false;
 
   const validUuid = UUID_REGEX.test(id);
@@ -245,9 +254,12 @@ export default async function handler(req, res) {
       found = true;
       if (challenge.title) title = `${challenge.title} · Level Up`;
       if (challenge.description) description = challenge.description;
+      // Prefer thumb_url (static image) over media_url (may be video)
+      rawMediaPath = challenge.thumb_url || challenge.media_url || null;
       // Point og:image at our proxy — keeps storage private
       proxyImageUrl = `${APEX}/api/challenge-og-image?id=${encodeURIComponent(id)}`;
-      console.log(`[challenge-og] found challenge — title="${challenge.title}" proxy="${proxyImageUrl}"`);
+      console.log(`[challenge-og] found — title="${challenge.title}" path="${rawMediaPath}" proxy="${proxyImageUrl}"`);
+      console.log(`[challenge-og] isVideo=${isVideoPath(rawMediaPath)}`);
     } else {
       console.log(`[challenge-og] challenge not found — id="${id}"`);
     }
@@ -257,7 +269,7 @@ export default async function handler(req, res) {
 
   console.log(`[challenge-og] final og:image="${proxyImageUrl}"`);
 
-  const html = buildHtml({ id, title, description, proxyImageUrl, found });
+  const html = buildHtml({ id, title, description, proxyImageUrl, found, rawMediaPath });
 
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
